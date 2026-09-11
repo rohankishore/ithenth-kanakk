@@ -53,10 +53,11 @@ function App() {
   const [darkPopupStep, setDarkPopupStep] = useState(0)
 
   const darkPopupText = [
-    'Dark mode will make everything look more serious. This calculator does not deserve that.',
+    'ഉറപ്പാണോ മിത്രമേ?',
     'Are you sure? The darkness may reveal several unnecessary decisions.',
     'NO',
   ]
+  const darkPopupButtons = ['ഉവ്വ്', 'Continue anyway', 'NO']
 
   useEffect(() => {
     if (!showTutorial) return undefined
@@ -202,10 +203,12 @@ function App() {
       {showDarkPopup && (
         <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="dark-popup-title">
           <section className="dark-popup">
-            <div className="dark-popup-kicker">DARK MODE CEREMONY · {darkPopupStep + 1}/3</div>
-            <div className="meme-slot" aria-label="Reserved meme image space"><span>meme goes here</span></div>
+            <div className="dark-popup-kicker">അന്ധകാരത്തിലേക്ക് ഒരു യാത്ര · {darkPopupStep + 1}/3</div>
+            <div className={`meme-slot meme-stage-${darkPopupStep + 1}`} aria-label={`Dark mode meme ${darkPopupStep + 1}`}>
+              <img src="/memes-dark/1.png" alt="Dark mode reaction meme" />
+            </div>
             <p id="dark-popup-title" className={darkPopupStep === 2 ? 'dark-popup-no' : ''}>{darkPopupText[darkPopupStep]}</p>
-            <button type="button" className="dark-popup-next" onClick={advanceDarkPopup}>{darkPopupStep === 2 ? 'Close' : 'Next'} <span>↗</span></button>
+            <button type="button" className="dark-popup-next" onClick={advanceDarkPopup}>{darkPopupButtons[darkPopupStep]} <span>↗</span></button>
           </section>
         </div>
       )}
