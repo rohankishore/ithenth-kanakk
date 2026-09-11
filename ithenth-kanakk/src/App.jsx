@@ -100,6 +100,15 @@ function App() {
       setWorseCount(0)
       return
     }
+    if (value === '⌫') {
+      setInput((current) => current.slice(0, -1))
+      setJustCalculated(false)
+      if (prediction && input.length <= prediction.base.length + prediction.value.length) {
+        setPrediction(null)
+        setMessage('മുന്നറിയിപ്പ് നീക്കം ചെയ്തു. ഇതിന് ഇത്രയും സമയം വേണ്ടിയിരുന്നില്ല.')
+      }
+      return
+    }
     if (value === '+/-') {
       setInput((current) => current.startsWith('-') ? current.slice(1) : `-${current}`)
       setJustCalculated(false)
@@ -110,16 +119,9 @@ function App() {
       return
     }
     const startsNew = justCalculated && !['+', '−', '×', '÷', '%'].includes(value)
-    const replacingPrediction = prediction && !['+', '−', '×', '÷', '%'].includes(value)
-    const next = replacingPrediction
-      ? `${prediction.base}${value}`
-      : startsNew || input === '0' ? value : `${input}${value}`
+    const next = startsNew || input === '0' ? value : `${input}${value}`
     setInput(next)
     setJustCalculated(false)
-    if (replacingPrediction) {
-      setPrediction(null)
-      setMessage('പ്രവചനം തെറ്റിച്ചു. നല്ലത്. നിങ്ങൾ ഇപ്പോഴും നിയന്ത്രണത്തിലാണെന്ന് നടിക്കാം.')
-    }
     if (next.match(/[+\-×÷]$/)) {
       if (level === 3) {
         const valueGuess = String(Math.floor(Math.random() * 89) + 11)
@@ -171,7 +173,7 @@ function App() {
           <img className="brand-logo" src="/logo.png" alt="ഇതെന്ത് കണക്ക്?" />
         </div>
         <div className="header-note"><span className="status-dot" /> 100% confident*</div>
-        <button className="icon-button" type="button" onClick={() => fakeAction('Settings? There are no settings.')}>⚙</button>
+        <button className="icon-button" type="button" aria-label="Settings" onClick={() => fakeAction('Settings? There are no settings.')}><span aria-hidden="true">⚙</span><b>Settings</b></button>
       </header>
 
       <section className="dashboard">
@@ -191,7 +193,6 @@ function App() {
         </aside>
 
         <section className="calculator-wrap">
-          <div className="speech-bubble">കണക്കു<br />വേണോ?</div>
           <div className="calculator">
             <div className="calc-top"><span className="tiny-light" /> IDK-6767 <span>9:41</span></div>
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
@@ -199,19 +200,17 @@ function App() {
               <strong>{loading ? '...' : screenValue}</strong>
               {level > 1 && <small>{levelSteps[level - 1][Math.min(worseCount, levelSteps[level - 1].length - 1)]}</small>}
             </div>
-              {prediction && <button className="prediction" onClick={() => { setPrediction(null); setInput(prediction.base); setMessage(`അയ്യോ. ${prediction.confidence}% confidence എവിടെ പോയി? പ്രവചനം തള്ളി.`) }}>I predict: <b>{prediction.value}</b> <span>{prediction.confidence}% confident · reject</span></button>}
+            {prediction && <div className="prediction">I predicted: <b>{prediction.value}</b> <span>{prediction.confidence}% confident · delete it yourself</span></div>}
             <div className="keypad">
-              {['C', '+/-', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '−', '1', '2', '3', '+', '0', '.', '='].map((key) => (
-                <button key={key} className={`key ${['÷', '×', '−', '+', '='].includes(key) ? 'operator' : ''} ${key === 'C' || key === '+/-' || key === '%' ? 'utility' : ''}`} onClick={() => press(key)}>{key}</button>
+              {['C', '⌫', '+/-', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '−', '1', '2', '3', '+', '0', '.', '='].map((key) => (
+                <button key={key} className={`key ${['÷', '×', '−', '+', '='].includes(key) ? 'operator' : ''} ${key === 'C' || key === '⌫' || key === '+/-' || key === '%' ? 'utility' : ''} ${key === '=' ? 'equals' : ''}`} onClick={() => press(key)}>{key}</button>
               ))}
             </div>
-            <div className="calc-footer"><span>☘ അനാവശ്യം</span><span>🎮 അമിതം</span><span>🧠 അസംബന്ധം</span></div>
           </div>
         </section>
 
         <aside className="right-rail">
           <div className="level-badge">LEVEL {level}<span>{levelCopy[level - 1].label} · {level === 1 ? 'equivalent-ish' : level === 2 ? 'needlessly elaborate' : 'actively ridiculous'}</span></div>
-          <div className="commentary"><span className="quote-mark">“</span><p>{message}</p></div>
           <div className="action-stack">
             <button onClick={() => fakeAction('It just felt right to me. Do it yourself on paper.')}>Explain steps <span>↗</span></button>
             <button onClick={() => fakeAction('Verified. Verification verified.')}>Verify again <span>↻</span></button>
@@ -222,7 +221,10 @@ function App() {
           <p className="fine-print">*confidence is a feeling, not a measurement</p>
         </aside>
       </section>
-      <footer>© 2026 ITK Industries <span>•</span> Built with questionable math <span>•</span> no useful features found</footer>
+      <footer className="app-footer">
+        <div className="footer-commentary"><span className="quote-mark">“</span><p>{message}</p></div>
+        <div className="footer-meta">copyright ഇല്ല. വേണേൽ copy അടിച്ചോ! <span>•</span> Built with questionable math, by <a href='instagram.com/_rohan.kishore/'>Rohan Kishore</a> <span>•</span> no useful features found</div>
+      </footer>
     </main>
   )
 }
