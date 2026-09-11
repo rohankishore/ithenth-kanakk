@@ -8,17 +8,30 @@ const moods = [
   'കണക്ക്? അല്ല, ഇത് ഒരു അനുഭവമാണ്.',
 ]
 
-const steps = [
-  'ആദ്യം, സംഖ്യകളെ നോക്കി ഒരു നീണ്ട ശ്വാസം എടുത്തു.',
-  'ഇനി ഈ കണക്കിനെ കൂടുതൽ ഔദ്യോഗികമാക്കുന്നു...',
-  'ദശാംശങ്ങളെ താൽക്കാലികമായി മറ്റൊരു രാജ്യത്തേക്ക് അയച്ചു.',
-  'പരിശോധിച്ചു. വീണ്ടും പരിശോധിച്ചു. എന്തിനെന്ന് അറിയില്ല.',
+const levelSteps = [
+  [
+    'ഉത്തരം കണ്ടെത്തി. ഉടൻ തന്നെ അതിനെ കൂടുതൽ ബുദ്ധിമുട്ടാക്കി.',
+    '2 − 1 → √1 → 10⁰ → log₁₀(10)',
+    'തുല്യമാണ്. കാണാൻ മാത്രം തുല്യമല്ലെന്ന് തോന്നുന്നു.',
+  ],
+  [
+    'ഘട്ടം 1: സംഖ്യകളെ നോക്കി ഒരു നീണ്ട ശ്വാസം എടുത്തു.',
+    'ഘട്ടം 2: യൂണിറ്റുകളെ താൽക്കാലികമായി മറ്റൊരു രാജ്യത്തേക്ക് അയച്ചു.',
+    'ഘട്ടം 3: വീണ്ടും കണക്കാക്കി. വീണ്ടും പരിശോധിച്ചു. എന്തിനെന്ന് അറിയില്ല.',
+    'ഘട്ടം 4: ഫലം ശരിയാണെന്ന് തെളിയിക്കാൻ ഫലത്തെ തന്നെ ചോദ്യം ചെയ്തു.',
+  ],
+  [
+    'ഭാവി സ്കാൻ ചെയ്തു... നിങ്ങളുടെ വിരലുകൾ സംശയാസ്പദമാണ്.',
+    '98.7% confidence ഉപയോഗിച്ച് ഒരു നമ്പർ വായുവിൽ നിന്ന് എടുത്തു.',
+    'ആ നമ്പർ നിങ്ങളുടെ മനസ്സുമായി ചെറിയ തർക്കത്തിലാണ്.',
+    'ഗണിതശാസ്ത്രം ഇപ്പോൾ ഉത്തരവാദിത്തം ഏറ്റെടുക്കുന്നില്ല.',
+  ],
 ]
 
 const levelCopy = [
-  { label: 'സാധാരണം', english: 'normal', value: 23, color: 'mint' },
-  { label: 'കുഴപ്പം', english: 'confusion', value: 61, color: 'yellow' },
-  { label: 'വെറുതെ', english: 'for no reason', value: 96, color: 'pink' },
+  { label: 'അനാവശ്യം', english: 'unnecessary', value: 23, color: 'mint' },
+  { label: 'അമിതം', english: 'excessive', value: 61, color: 'yellow' },
+  { label: 'അസംബന്ധം', english: 'absurd', value: 96, color: 'pink' },
 ]
 
 function App() {
@@ -31,11 +44,16 @@ function App() {
   const [prediction, setPrediction] = useState(null)
   const [justCalculated, setJustCalculated] = useState(false)
   const [showTutorial, setShowTutorial] = useState(true)
+  const [worseCount, setWorseCount] = useState(0)
 
   const transformed = useMemo(() => {
-    if (display === '6.25') return level > 1 ? '√(39.0625) × 10⁰' : '6.25'
-    return level > 1 ? `(${display} + 0) × 1⁰` : display
-  }, [display, level])
+    if (level === 1) {
+      const equivalent = display === '1' ? '√1 → 10⁰ → log₁₀(10)' : `${display} → (${display} × 1)`
+      return `${equivalent}${' → ' + display + ' ÷ 1'.repeat(worseCount)}`
+    }
+    if (level === 2) return `${display} → ${display} × 100 ÷ 100 → ${display} + 0${' → verified again'.repeat(worseCount)}`
+    return `${display} → probably ${display} → definitely maybe ${display}${' → statistically suspicious'.repeat(worseCount)}`
+  }, [display, level, worseCount])
 
   const screenValue = input && !justCalculated ? input : transformed
 
@@ -49,7 +67,9 @@ function App() {
       setHistory(nextInput)
       setInput(String(Number(result.toFixed(6))))
       setJustCalculated(true)
-      setMessage(moods[Math.floor(Math.random() * moods.length)])
+        if (level === 1) setMessage('കൃത്യമായ ഉത്തരം. പക്ഷേ നേരെ പറയുന്നത് മര്യാദയല്ല.')
+        if (level === 2) setMessage('ഉത്തരം ശരിയാണ്. അതിലേക്ക് എത്താൻ നാലു ഘട്ടങ്ങൾ മാത്രം വേണ്ടിയിരുന്നു.')
+        if (level === 3) setMessage('കണക്ക് പൂർത്തിയായി. വിശ്വസിക്കണമെന്ന് ഞാൻ പറയുന്നില്ല.')
     } catch {
       setDisplay('hmm?')
       setHistory(nextInput)
@@ -64,6 +84,7 @@ function App() {
       setHistory('fresh start')
       setPrediction(null)
       setJustCalculated(false)
+      setWorseCount(0)
       return
     }
     if (value === '+/-') {
@@ -76,18 +97,35 @@ function App() {
       return
     }
     const startsNew = justCalculated && !['+', '−', '×', '÷', '%'].includes(value)
-    const next = startsNew || input === '0' ? value : `${input}${value}`
+    const replacingPrediction = prediction && !['+', '−', '×', '÷', '%'].includes(value)
+    const next = replacingPrediction
+      ? `${prediction.base}${value}`
+      : startsNew || input === '0' ? value : `${input}${value}`
     setInput(next)
     setJustCalculated(false)
+    if (replacingPrediction) {
+      setPrediction(null)
+      setMessage('പ്രവചനം തെറ്റിച്ചു. നല്ലത്. നിങ്ങൾ ഇപ്പോഴും നിയന്ത്രണത്തിലാണെന്ന് നടിക്കാം.')
+    }
     if (next.match(/[+\-×÷]$/)) {
-      setPrediction(String(Math.floor(Math.random() * 89) + 11))
-      setMessage('എനിക്ക് നിങ്ങളുടെ അടുത്ത നമ്പർ അറിയാം. ഏകദേശം.')
+      if (level === 3) {
+        const valueGuess = String(Math.floor(Math.random() * 89) + 11)
+        setPrediction({ value: valueGuess, base: next, confidence: (97 + Math.random() * 2.9).toFixed(1) })
+        setInput(`${next}${valueGuess}`)
+        setMessage('നിങ്ങളുടെ അടുത്ത നമ്പർ ഞാൻ സ്വയം ചേർത്തു. ദയവായി അതിൽ നിരാശപ്പെടുക.')
+      } else {
+        setMessage(level === 2 ? 'അമിതമായ verification queue-ലേക്ക് ചേർത്തു.' : 'ഒരു operator കണ്ടു. ഇപ്പോൾ ഗണിതം ആരംഭിക്കാം.')
+      }
     }
   }
 
   const makeWorse = () => {
-    setLevel((current) => Math.min(3, current + 1))
-    setMessage('അഭിനന്ദനങ്ങൾ. ഇത് ഇപ്പോൾ ആവശ്യത്തിലധികം സങ്കീർണ്ണമാണ്.')
+    setWorseCount((current) => Math.min(3, current + 1))
+    setMessage(level === 1
+      ? 'തുല്യമായ മറ്റൊരു സമവാക്യം ചേർത്തു. ആവശ്യമായിരുന്നില്ല.'
+      : level === 2
+        ? 'രണ്ട് verification കൂടി ചേർത്തു. ഫലം മാറിയിട്ടില്ല. സമയം മാത്രം പോയി.'
+        : 'അസംബന്ധത വർധിപ്പിച്ചു. ഇപ്പോൾ calculator നിങ്ങളെക്കുറിച്ച് അഭിപ്രായപ്പെടുന്നു.')
   }
 
   const fakeAction = (text) => {
@@ -106,9 +144,9 @@ function App() {
             <h2 id="tutorial-title">ഇതെന്ത് കണക്ക്?</h2>
             <p className="tutorial-lead">A calculator that knows the answer, but would prefer to make you work for it.</p>
             <div className="tutorial-grid">
-              <article><b>01 · സാധാരണം</b><p>Tap numbers and operators. It will calculate normally, which is frankly a little embarrassing.</p></article>
-              <article><b>02 · കുഴപ്പം</b><p>Choose a higher level or press <strong>MAKE IT WORSE</strong>. We add fake steps, dramatic pauses, and unnecessary mathematics.</p></article>
-              <article><b>03 · വെറുതെ</b><p>After an operator, we confidently guess your next number. We are usually wrong. Please reject it personally.</p></article>
+              <article><b>01 · അനാവശ്യം</b><p>It calculates correctly, then disguises the answer as an unnecessarily complicated equivalent equation.</p></article>
+              <article><b>02 · അമിതം</b><p>It adds conversions, repeated verification, fake processing, and several steps nobody requested.</p></article>
+              <article><b>03 · അസംബന്ധം</b><p>After an operator, it confidently autofills your next number. It is usually wrong. Please reject it personally.</p></article>
             </div>
             <p className="tutorial-footnote">Nothing here will save you time. That is the point.</p>
             <button className="tutorial-button" type="button" onClick={() => setShowTutorial(false)}>I understand absolutely nothing <span>↗</span></button>
@@ -129,7 +167,7 @@ function App() {
           <div className="meters">
             <p className="section-label">USELESSNESS LEVELS</p>
             {levelCopy.map((item, index) => (
-              <button className={`meter meter-${item.color}`} key={item.label} onClick={() => { setLevel(index + 1); setMessage(`Level ${index + 1}: ${item.label}. A bold choice.`) }}>
+              <button className={`meter meter-${item.color}`} key={item.label} onClick={() => { setLevel(index + 1); setWorseCount(0); setPrediction(null); setMessage(`Level ${index + 1}: ${item.label}. A bold choice.`) }}>
                 <span className="meter-top"><b>{item.label}</b><small>{item.english}</small></span>
                 <span className="meter-track"><i style={{ width: `${item.value}%` }} /></span>
                 <strong>{item.value}%</strong>
@@ -146,20 +184,20 @@ function App() {
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
               <span className="screen-history">{history} =</span>
               <strong>{loading ? '...' : screenValue}</strong>
-              {level > 1 && <small>{steps[level - 2]}</small>}
+              {level > 1 && <small>{levelSteps[level - 1][Math.min(worseCount, levelSteps[level - 1].length - 1)]}</small>}
             </div>
-            {prediction && <button className="prediction" onClick={() => { setPrediction(null); setMessage('അയ്യോ. പ്രവചനം തെറ്റി. 98% confidence എവിടെ പോയി?') }}>I predict: <b>{prediction}</b> <span>tap to reject</span></button>}
+              {prediction && <button className="prediction" onClick={() => { setPrediction(null); setInput(prediction.base); setMessage(`അയ്യോ. ${prediction.confidence}% confidence എവിടെ പോയി? പ്രവചനം തള്ളി.`) }}>I predict: <b>{prediction.value}</b> <span>{prediction.confidence}% confident · reject</span></button>}
             <div className="keypad">
               {['C', '+/-', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '−', '1', '2', '3', '+', '0', '.', '='].map((key) => (
                 <button key={key} className={`key ${['÷', '×', '−', '+', '='].includes(key) ? 'operator' : ''} ${key === 'C' || key === '+/-' || key === '%' ? 'utility' : ''}`} onClick={() => press(key)}>{key}</button>
               ))}
             </div>
-            <div className="calc-footer"><span>☘ സാധാരണം</span><span>🎮 കുഴപ്പം</span><span>🧠 വെറുതെ</span></div>
+            <div className="calc-footer"><span>☘ അനാവശ്യം</span><span>🎮 അമിതം</span><span>🧠 അസംബന്ധം</span></div>
           </div>
         </section>
 
         <aside className="right-rail">
-          <div className="level-badge">LEVEL {level}<span>{level === 1 ? 'normal-ish' : level === 2 ? 'needlessly complex' : 'absolutely pointless'}</span></div>
+          <div className="level-badge">LEVEL {level}<span>{levelCopy[level - 1].label} · {level === 1 ? 'equivalent-ish' : level === 2 ? 'needlessly elaborate' : 'actively ridiculous'}</span></div>
           <div className="commentary"><span className="quote-mark">“</span><p>{message}</p></div>
           <div className="action-stack">
             <button onClick={() => fakeAction('It just felt right to me. Do it yourself on paper.')}>Explain steps <span>↗</span></button>
