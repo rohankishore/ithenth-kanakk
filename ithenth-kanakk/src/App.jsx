@@ -49,6 +49,14 @@ function App() {
   const [showSteps, setShowSteps] = useState(false)
   const [confidence, setConfidence] = useState('98.7')
   const [faceReacting, setFaceReacting] = useState(false)
+  const [showDarkPopup, setShowDarkPopup] = useState(false)
+  const [darkPopupStep, setDarkPopupStep] = useState(0)
+
+  const darkPopupText = [
+    'Dark mode will make everything look more serious. This calculator does not deserve that.',
+    'Are you sure? The darkness may reveal several unnecessary decisions.',
+    'NO',
+  ]
 
   useEffect(() => {
     if (!showTutorial) return undefined
@@ -176,8 +184,31 @@ function App() {
     window.setTimeout(() => setFaceReacting(false), 700)
   }
 
+  const openDarkMode = () => {
+    setDarkPopupStep(0)
+    setShowDarkPopup(true)
+  }
+
+  const advanceDarkPopup = () => {
+    if (darkPopupStep === darkPopupText.length - 1) {
+      setShowDarkPopup(false)
+      return
+    }
+    setDarkPopupStep((current) => current + 1)
+  }
+
   return (
     <main className="app-shell">
+      {showDarkPopup && (
+        <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="dark-popup-title">
+          <section className="dark-popup">
+            <div className="dark-popup-kicker">DARK MODE CEREMONY · {darkPopupStep + 1}/3</div>
+            <div className="meme-slot" aria-label="Reserved meme image space"><span>meme goes here</span></div>
+            <p id="dark-popup-title" className={darkPopupStep === 2 ? 'dark-popup-no' : ''}>{darkPopupText[darkPopupStep]}</p>
+            <button type="button" className="dark-popup-next" onClick={advanceDarkPopup}>{darkPopupStep === 2 ? 'Close' : 'Next'} <span>↗</span></button>
+          </section>
+        </div>
+      )}
       {showTutorial && (
         <div className="tutorial-backdrop" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
           <section className="tutorial-card">
@@ -199,12 +230,14 @@ function App() {
         <div className="brand-lockup">
           <img className="brand-logo" src="/logo.png" alt="ഇതെന്ത് കണക്ക്?" />
         </div>
-        <button className="icon-button" type="button" aria-label="Settings" onClick={() => fakeAction('Settings? There are no settings.')}><span aria-hidden="true">⚙</span><b>Settings</b></button>
+        <div className="header-actions">
+          <button className="icon-button dark-mode-button" type="button" aria-label="Dark mode" onClick={openDarkMode}><span aria-hidden="true">☾</span><b>Dark mode</b></button>
+          <button className="icon-button" type="button" aria-label="Settings" onClick={() => fakeAction('Settings? There are no settings.')}><span aria-hidden="true">⚙</span><b>Settings</b></button>
+        </div>
       </header>
 
       <section className="dashboard">
         <aside className="left-rail">
-          <div className="sticker">SAME<br />MATH.<br /><strong>MORE<br />DRAMA.</strong></div>
           <div className="meters">
             <p className="section-label">USELESSNESS LEVELS</p>
             {levelCopy.map((item, index) => (
@@ -224,6 +257,7 @@ function App() {
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
               <span className="screen-history">{history}{history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ' ? '' : ' ='}</span>
               <strong>{loading ? '...' : screenValue}</strong>
+              <small className="screen-commentary">{message}</small>
               {showSteps && <small>{levelSteps[level - 1].join(' → ')} → answer confirmed: {display}</small>}
             </div>
             {prediction && <div className="prediction">I predicted: <b>{prediction.value}</b> <span>{prediction.confidence}% confident · delete it yourself</span></div>}
@@ -248,7 +282,7 @@ function App() {
         </aside>
       </section>
       <footer className="app-footer">
-        <div className="footer-commentary"><span className="quote-mark">“</span><p>{message}</p></div>
+        <div className="footer-commentary"><span className="quote-mark">“</span><p>ഉത്തരം ശരിയാണ്. കാരണം ഞാൻ പറഞ്ഞത് ശരിയാണ്.</p></div>
         <div className="footer-meta">copyright ഇല്ല. വേണേൽ copy അടിച്ചോ! <span>•</span> Built with questionable math, by <a href='https://instagram.com/_rohan.kishore/'>Rohan Kishore</a> <span>•</span> no useful features found</div>
       </footer>
     </main>
