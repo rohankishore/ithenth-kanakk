@@ -43,11 +43,12 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [prediction, setPrediction] = useState(null)
   const [justCalculated, setJustCalculated] = useState(false)
-  const [showTutorial, setShowTutorial] = useState(true)
+  const [showTutorial, setShowTutorial] = useState(false)
   const [worseCount, setWorseCount] = useState(0)
   const [tutorialOrder, setTutorialOrder] = useState([0, 1, 2])
   const [showSteps, setShowSteps] = useState(false)
   const [confidence, setConfidence] = useState('98.7')
+  const [faceReacting, setFaceReacting] = useState(false)
 
   useEffect(() => {
     if (!showTutorial) return undefined
@@ -78,13 +79,23 @@ function App() {
       if (!/^[\d+*/().\-\s]+$/.test(expression)) throw new Error('nope')
       const result = Function(`"use strict"; return (${expression})`)()
       if (!Number.isFinite(result)) throw new Error('nope')
-      setDisplay(String(Number(result.toFixed(6))))
+      const correctResult = Number(result.toFixed(6))
+      const isWrongLevelThreeAnswer = level === 3 && Math.random() < 0.5
+      const shownResult = isWrongLevelThreeAnswer
+        ? Number((correctResult + (correctResult === 0 ? 7 : Math.max(1, Math.round(Math.abs(correctResult) * 0.23)))).toFixed(6))
+        : correctResult
+      setDisplay(String(shownResult))
       setHistory(nextInput)
-      setInput(String(Number(result.toFixed(6))))
+      setInput(String(shownResult))
       setJustCalculated(true)
-        if (level === 1) setMessage('കൃത്യമായ ഉത്തരം. പക്ഷേ നേരെ പറയുന്നത് മര്യാദയല്ല.')
-        if (level === 2) setMessage('ഉത്തരം ശരിയാണ്. അതിലേക്ക് എത്താൻ നാലു ഘട്ടങ്ങൾ മാത്രം വേണ്ടിയിരുന്നു.')
-        if (level === 3) setMessage('കണക്ക് പൂർത്തിയായി. വിശ്വസിക്കണമെന്ന് ഞാൻ പറയുന്നില്ല.')
+      if (level === 1) setMessage('കൃത്യമായ ഉത്തരം. പക്ഷേ നേരെ പറയുന്നത് മര്യാദയല്ല.')
+      if (level === 2) setMessage('ഉത്തരം ശരിയാണ്. അതിലേക്ക് എത്താൻ നാലു ഘട്ടങ്ങൾ മാത്രം വേണ്ടിയിരുന്നു.')
+      if (level === 3) {
+        setConfidence(isWrongLevelThreeAnswer ? (38 + Math.random() * 18).toFixed(1) : '98.7')
+        setMessage(isWrongLevelThreeAnswer
+          ? 'ഉത്തരം തെറ്റായിരിക്കാം. വേണേൽ സ്വയം കണക്ക് കൂട്ടുക!'
+          : 'ഇത്തവണ ശരിയായി. ഇത് ആവർത്തിക്കുമെന്ന് വാഗ്ദാനം ചെയ്യുന്നില്ല.')
+      }
     } catch {
       setDisplay('hmm?')
       setHistory(nextInput)
@@ -159,6 +170,12 @@ function App() {
     fakeAction('Steps are now visible. You asked for this.')
   }
 
+  const reactToFace = () => {
+    setFaceReacting(true)
+    setMessage('മുഖത്ത് ക്ലിക്ക് ചെയ്തോ? അതും കണക്കിന്റെ ഭാഗമല്ലായിരുന്നു.')
+    window.setTimeout(() => setFaceReacting(false), 700)
+  }
+
   return (
     <main className="app-shell">
       {showTutorial && (
@@ -182,7 +199,6 @@ function App() {
         <div className="brand-lockup">
           <img className="brand-logo" src="/logo.png" alt="ഇതെന്ത് കണക്ക്?" />
         </div>
-        <div className="header-note"><span className="status-dot" /> 100% confident*</div>
         <button className="icon-button" type="button" aria-label="Settings" onClick={() => fakeAction('Settings? There are no settings.')}><span aria-hidden="true">⚙</span><b>Settings</b></button>
       </header>
 
@@ -199,7 +215,7 @@ function App() {
               </button>
             ))}
           </div>
-          <div className="mascot" aria-hidden="true"><span>◉</span><span>◉</span><b>⌁</b></div>
+          <button className={`mascot ${faceReacting ? 'face-reacting' : ''}`} type="button" aria-label="React with calculator face" onClick={reactToFace}><span>◉</span><span>◉</span><b>⌁</b></button>
         </aside>
 
         <section className="calculator-wrap">
@@ -233,7 +249,7 @@ function App() {
       </section>
       <footer className="app-footer">
         <div className="footer-commentary"><span className="quote-mark">“</span><p>{message}</p></div>
-        <div className="footer-meta">copyright ഇല്ല. വേണേൽ copy അടിച്ചോ! <span>•</span> Built with questionable math, by <a href='instagram.com/_rohan.kishore/'>Rohan Kishore</a> <span>•</span> no useful features found</div>
+        <div className="footer-meta">copyright ഇല്ല. വേണേൽ copy അടിച്ചോ! <span>•</span> Built with questionable math, by <a href='https://instagram.com/_rohan.kishore/'>Rohan Kishore</a> <span>•</span> no useful features found</div>
       </footer>
     </main>
   )
