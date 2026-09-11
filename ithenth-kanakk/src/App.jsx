@@ -117,11 +117,7 @@ function App() {
       )}
       <header className="topbar">
         <div className="brand-lockup">
-          <span className="brand-mark">?</span>
-          <div>
-            <p className="eyebrow">A calculator for people who</p>
-            <h1>ഇതെന്ത് കണക്ക്?</h1>
-          </div>
+          <img className="brand-logo" src="/logo.png" alt="ഇതെന്ത് കണക്ക്?" />
         </div>
         <div className="header-note"><span className="status-dot" /> 100% confident*</div>
         <button className="icon-button" type="button" onClick={() => fakeAction('Settings? There are no settings.')}>⚙</button>
