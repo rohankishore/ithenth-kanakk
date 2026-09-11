@@ -22,7 +22,7 @@ const levelCopy = [
 ]
 
 function App() {
-  const [input, setInput] = useState('25 ÷ 4')
+  const [input, setInput] = useState('')
   const [display, setDisplay] = useState('6.25')
   const [history, setHistory] = useState('25 ÷ 4')
   const [level, setLevel] = useState(1)
@@ -36,6 +36,8 @@ function App() {
     if (display === '6.25') return level > 1 ? '√(39.0625) × 10⁰' : '6.25'
     return level > 1 ? `(${display} + 0) × 1⁰` : display
   }, [display, level])
+
+  const screenValue = input && !justCalculated ? input : transformed
 
   const calculate = (nextInput = input) => {
     const expression = nextInput.replace('×', '*').replace('÷', '/').replace('−', '-').replace(/(\d+(?:\.\d+)?)%/g, '($1/100)')
@@ -74,7 +76,7 @@ function App() {
       return
     }
     const startsNew = justCalculated && !['+', '−', '×', '÷', '%'].includes(value)
-    const next = startsNew || input === '25 ÷ 4' || input === '0' ? value : `${input}${value}`
+    const next = startsNew || input === '0' ? value : `${input}${value}`
     setInput(next)
     setJustCalculated(false)
     if (next.match(/[+\-×÷]$/)) {
@@ -147,7 +149,7 @@ function App() {
             <div className="calc-top"><span className="tiny-light" /> ITK-3000 <span>9:41</span></div>
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
               <span className="screen-history">{history} =</span>
-              <strong>{loading ? '...' : transformed}</strong>
+              <strong>{loading ? '...' : screenValue}</strong>
               {level > 1 && <small>{steps[level - 2]}</small>}
             </div>
             {prediction && <button className="prediction" onClick={() => { setPrediction(null); setMessage('അയ്യോ. പ്രവചനം തെറ്റി. 98% confidence എവിടെ പോയി?') }}>I predict: <b>{prediction}</b> <span>tap to reject</span></button>}
