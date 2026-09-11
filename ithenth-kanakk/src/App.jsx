@@ -37,7 +37,7 @@ const levelCopy = [
 function App() {
   const [input, setInput] = useState('')
   const [display, setDisplay] = useState('0')
-  const [history, setHistory] = useState('ready when you are')
+  const [history, setHistory] = useState('ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ')
   const [level, setLevel] = useState(1)
   const [message, setMessage] = useState(moods[1])
   const [loading, setLoading] = useState(false)
@@ -47,7 +47,7 @@ function App() {
   const [worseCount, setWorseCount] = useState(0)
 
   const transformed = useMemo(() => {
-    if (display === '0' && history === 'ready when you are') return '0'
+    if (display === '0' && history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ') return '0'
     if (level === 1) {
       const divisionParts = history.split('÷').map((part) => part.trim())
       const equivalent = history.includes('÷') && divisionParts.length === 2
