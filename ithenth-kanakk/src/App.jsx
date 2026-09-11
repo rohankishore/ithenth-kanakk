@@ -46,6 +46,8 @@ function App() {
   const [showTutorial, setShowTutorial] = useState(true)
   const [worseCount, setWorseCount] = useState(0)
   const [tutorialOrder, setTutorialOrder] = useState([0, 1, 2])
+  const [showSteps, setShowSteps] = useState(false)
+  const [confidence, setConfidence] = useState('98.7')
 
   useEffect(() => {
     if (!showTutorial) return undefined
@@ -65,8 +67,8 @@ function App() {
       return `${equivalent} → ${display}${' → equivalent'.repeat(worseCount)}`
     }
     if (level === 2) return `${display} → ${display} × 100 ÷ 100 → ${display} + 0${' → verified again'.repeat(worseCount)}`
-    return `${display} → probably ${display} → definitely maybe ${display}${' → statistically suspicious'.repeat(worseCount)}`
-  }, [display, level, worseCount])
+    return `probably ${display} · ${confidence}% confident${' · statistically suspicious'.repeat(worseCount)}`
+  }, [display, level, worseCount, confidence])
 
   const screenValue = input && !justCalculated ? input : transformed
 
@@ -98,6 +100,7 @@ function App() {
       setPrediction(null)
       setJustCalculated(false)
       setWorseCount(0)
+      setShowSteps(false)
       return
     }
     if (value === '⌫') {
@@ -125,7 +128,9 @@ function App() {
     if (next.match(/[+\-×÷]$/)) {
       if (level === 3) {
         const valueGuess = String(Math.floor(Math.random() * 89) + 11)
-        setPrediction({ value: valueGuess, base: next, confidence: (97 + Math.random() * 2.9).toFixed(1) })
+        const predictionConfidence = (97 + Math.random() * 2.9).toFixed(1)
+        setConfidence(predictionConfidence)
+        setPrediction({ value: valueGuess, base: next, confidence: predictionConfidence })
         setInput(`${next}${valueGuess}`)
         setMessage('നിങ്ങളുടെ അടുത്ത നമ്പർ ഞാൻ സ്വയം ചേർത്തു. ദയവായി അതിൽ നിരാശപ്പെടുക.')
       } else {
@@ -147,6 +152,11 @@ function App() {
     setLoading(true)
     setMessage(text)
     window.setTimeout(() => setLoading(false), 850)
+  }
+
+  const explainSteps = () => {
+    setShowSteps(true)
+    fakeAction('Steps are now visible. You asked for this.')
   }
 
   return (
@@ -198,7 +208,7 @@ function App() {
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
               <span className="screen-history">{history}{history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ' ? '' : ' ='}</span>
               <strong>{loading ? '...' : screenValue}</strong>
-              {level > 1 && <small>{levelSteps[level - 1][Math.min(worseCount, levelSteps[level - 1].length - 1)]}</small>}
+              {showSteps && <small>{levelSteps[level - 1].join(' → ')} → answer confirmed: {display}</small>}
             </div>
             {prediction && <div className="prediction">I predicted: <b>{prediction.value}</b> <span>{prediction.confidence}% confident · delete it yourself</span></div>}
             <div className="keypad">
@@ -212,7 +222,7 @@ function App() {
         <aside className="right-rail">
           <div className="level-badge">LEVEL {level}<span>{levelCopy[level - 1].label} · {level === 1 ? 'equivalent-ish' : level === 2 ? 'needlessly elaborate' : 'actively ridiculous'}</span></div>
           <div className="action-stack">
-            <button onClick={() => fakeAction('It just felt right to me. Do it yourself on paper.')}>Explain steps <span>↗</span></button>
+            <button onClick={explainSteps}>Explain steps <span>↗</span></button>
             <button onClick={() => fakeAction('Verified. Verification verified.')}>Verify again <span>↻</span></button>
             <button onClick={() => fakeAction('Why? Excellent question. No answer.')}>Why? <span>?</span></button>
             <button onClick={() => { setLevel(3); setMessage('Predictive mode activated. Your keystrokes are being judged.') }}>Predict my next number <span>⌁</span></button>
