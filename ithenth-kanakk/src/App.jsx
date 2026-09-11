@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
 const moods = [
@@ -45,6 +45,15 @@ function App() {
   const [justCalculated, setJustCalculated] = useState(false)
   const [showTutorial, setShowTutorial] = useState(true)
   const [worseCount, setWorseCount] = useState(0)
+  const [tutorialOrder, setTutorialOrder] = useState([0, 1, 2])
+
+  useEffect(() => {
+    if (!showTutorial) return undefined
+    const shuffle = window.setInterval(() => {
+      setTutorialOrder((current) => [current[1], current[2], current[0]])
+    }, 1700)
+    return () => window.clearInterval(shuffle)
+  }, [showTutorial])
 
   const transformed = useMemo(() => {
     if (display === '0' && history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ') return '0'
@@ -148,9 +157,9 @@ function App() {
             <h2 id="tutorial-title">ഇതെന്ത് കണക്ക്?</h2>
             <p className="tutorial-lead">A calculator that knows the answer, but would prefer to make you work for it.</p>
             <div className="tutorial-grid">
-              <article><b>01 · അനാവശ്യം</b><p>It calculates correctly, then disguises the answer as an unnecessarily complicated equivalent equation.</p></article>
-              <article><b>02 · അമിതം</b><p>It adds conversions, repeated verification, fake processing, and several steps nobody requested.</p></article>
-              <article><b>03 · അസംബന്ധം</b><p>After an operator, it confidently autofills your next number. It is usually wrong. Please reject it personally.</p></article>
+              <article style={{ order: tutorialOrder[0] }}><b>01 · അനാവശ്യം</b><p>It calculates correctly, then disguises the answer as an unnecessarily complicated equivalent equation.</p></article>
+              <article style={{ order: tutorialOrder[1] }}><b>02 · അമിതം</b><p>It adds conversions, repeated verification, fake processing, and several steps nobody requested.</p></article>
+              <article style={{ order: tutorialOrder[2] }}><b>03 · അസംബന്ധം</b><p>After an operator, it confidently autofills your next number. It is usually wrong. Please reject it personally.</p></article>
             </div>
             <p className="tutorial-footnote">Nothing here will save you time. That is the point.</p>
             <button className="tutorial-button" type="button" onClick={() => setShowTutorial(false)}>I understand absolutely nothing <span>↗</span></button>
@@ -184,7 +193,7 @@ function App() {
         <section className="calculator-wrap">
           <div className="speech-bubble">കണക്കു<br />വേണോ?</div>
           <div className="calculator">
-            <div className="calc-top"><span className="tiny-light" /> ITK-3000 <span>9:41</span></div>
+            <div className="calc-top"><span className="tiny-light" /> IDK-6767 <span>9:41</span></div>
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
               <span className="screen-history">{history}{history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ' ? '' : ' ='}</span>
               <strong>{loading ? '...' : screenValue}</strong>
