@@ -21,6 +21,7 @@
 @keyframes blink { to { opacity: .25; } }
 .meme-slot { height: 190px; aspect-ratio: auto; }.meme-slot img { width: auto; height: auto; max-width: 92%; max-height: 176px; object-fit: contain; transform: scale(.92) !important; }
 .screen-commentary { font-size: 9px !important; }
+.dark-popup-no { font-size: clamp(28px, 7vw, 38px) !important; line-height: 1.12 !important; text-align: center; }
 @keyframes face-pop { 35% { transform: rotate(8deg) scale(1.2); } 70% { transform: rotate(-14deg) scale(.95); } }.mascot.face-reacting span { background: var(--pink); }
 @keyframes face-wink { 45% { transform: scaleY(.12); } 70% { transform: scaleY(1.15); } }
 .key.equals { grid-column: 1 / -1; background: var(--pink); }
