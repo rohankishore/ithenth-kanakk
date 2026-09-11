@@ -34,6 +34,21 @@ const levelCopy = [
   { label: 'അസംബന്ധം', english: 'absurd', value: 96, color: 'pink' },
 ]
 
+const shuffleDigits = (value) => {
+  const [whole, fraction] = String(value).split('.')
+  const sign = whole.startsWith('-') ? '-' : ''
+  const digits = whole.replace('-', '').split('')
+  for (let index = digits.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1))
+    ;[digits[index], digits[swapIndex]] = [digits[swapIndex], digits[index]]
+  }
+  if (digits.length > 1 && digits[0] === '0') {
+    const nonZeroIndex = digits.findIndex((digit) => digit !== '0')
+    ;[digits[0], digits[nonZeroIndex]] = [digits[nonZeroIndex], digits[0]]
+  }
+  return `${sign}${digits.join('')}${fraction ? `.${fraction}` : ''}`
+}
+
 function App() {
   const [input, setInput] = useState('')
   const [display, setDisplay] = useState('0')
@@ -93,9 +108,11 @@ function App() {
       const shownResult = isWrongLevelThreeAnswer
         ? Number((correctResult + (correctResult === 0 ? 7 : Math.max(1, Math.round(Math.abs(correctResult) * 0.23)))).toFixed(6))
         : correctResult
-      setDisplay(String(shownResult))
+      const isShiftedLevelThreeAnswer = level === 3 && Math.random() < 0.45 && String(shownResult).replace(/\D/g, '').length > 1
+      const visibleResult = isShiftedLevelThreeAnswer ? shuffleDigits(shownResult) : String(shownResult)
+      setDisplay(visibleResult)
       setHistory(nextInput)
-      setInput(String(shownResult))
+      setInput(visibleResult)
       setJustCalculated(true)
       if (level === 1) setMessage('കൃത്യമായ ഉത്തരം. പക്ഷേ നേരെ പറയുന്നത് മര്യാദയല്ല.')
       if (level === 2) setMessage('ഉത്തരം ശരിയാണ്. അതിലേക്ക് എത്താൻ നാലു ഘട്ടങ്ങൾ മാത്രം വേണ്ടിയിരുന്നു.')
@@ -103,7 +120,9 @@ function App() {
         setConfidence(isWrongLevelThreeAnswer ? (38 + Math.random() * 18).toFixed(1) : '98.7')
         setMessage(isWrongLevelThreeAnswer
           ? 'ഉത്തരം തെറ്റായിരിക്കാം. വേണേൽ സ്വയം കണക്ക് കൂട്ടുക!'
-          : 'ഇത്തവണ ശരിയായി. ഇത് ആവർത്തിക്കുമെന്ന് വാഗ്ദാനം ചെയ്യുന്നില്ല.')
+          : isShiftedLevelThreeAnswer
+            ? `അക്കങ്ങൾ അവരുടെ സ്ഥാനം മാറ്റി. ${visibleResult} ഇപ്പോൾ കൂടുതൽ വിശ്വസനീയമാണ്.`
+            : 'ഇത്തവണ ശരിയായി. ഇത് ആവർത്തിക്കുമെന്ന് വാഗ്ദാനം ചെയ്യുന്നില്ല.')
       }
     } catch {
       setDisplay('hmm?')
