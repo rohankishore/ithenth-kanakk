@@ -186,7 +186,7 @@ function App() {
           <div className="calculator">
             <div className="calc-top"><span className="tiny-light" /> ITK-3000 <span>9:41</span></div>
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
-              <span className="screen-history">{history} =</span>
+              <span className="screen-history">{history}{history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ' ? '' : ' ='}</span>
               <strong>{loading ? '...' : screenValue}</strong>
               {level > 1 && <small>{levelSteps[level - 1][Math.min(worseCount, levelSteps[level - 1].length - 1)]}</small>}
             </div>
