@@ -61,11 +61,12 @@ function App() {
   const [showTutorial, setShowTutorial] = useState(false)
   const [worseCount, setWorseCount] = useState(0)
   const [tutorialOrder, setTutorialOrder] = useState([0, 1, 2])
-  const [showSteps, setShowSteps] = useState(false)
+  const [showExplainPopup, setShowExplainPopup] = useState(false)
   const [confidence, setConfidence] = useState('98.7')
   const [faceReacting, setFaceReacting] = useState(false)
   const [showDarkPopup, setShowDarkPopup] = useState(false)
   const [darkPopupStep, setDarkPopupStep] = useState(0)
+  const [verifyPopupStep, setVerifyPopupStep] = useState(null)
 
   const darkPopupText = [
     'ഉറപ്പാണോ മിത്രമേ?',
@@ -139,7 +140,6 @@ function App() {
       setPrediction(null)
       setJustCalculated(false)
       setWorseCount(0)
-      setShowSteps(false)
       return
     }
     if (value === '⌫') {
@@ -194,8 +194,7 @@ function App() {
   }
 
   const explainSteps = () => {
-    setShowSteps(true)
-    fakeAction('Steps are now visible. You asked for this.')
+    setShowExplainPopup(true)
   }
 
   const reactToFace = () => {
@@ -217,6 +216,15 @@ function App() {
     setDarkPopupStep((current) => current + 1)
   }
 
+  const openVerifyPopup = () => {
+    setVerifyPopupStep(0)
+  }
+
+  const buyPenAndPaper = () => {
+    window.open('https://www.amazon.in/s?k=pen+and+paper', '_blank', 'noopener,noreferrer')
+    setVerifyPopupStep(1)
+  }
+
   return (
     <main className="app-shell">
       {showDarkPopup && (
@@ -228,6 +236,34 @@ function App() {
             </div>
             <p id="dark-popup-title" className={darkPopupStep === 2 ? 'dark-popup-no' : ''}>{darkPopupText[darkPopupStep]}</p>
             <button type="button" className="dark-popup-next" onClick={advanceDarkPopup}>{darkPopupButtons[darkPopupStep]} <span>↗</span></button>
+          </section>
+        </div>
+      )}
+      {verifyPopupStep !== null && (
+        <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="verify-popup-title">
+          <section className="dark-popup verify-popup">
+            <div className="dark-popup-kicker">VERIFICATION DEPARTMENT</div>
+            <div className="verify-popup-icon" aria-hidden="true">✎</div>
+            <p id="verify-popup-title">
+              {verifyPopupStep === 0
+                ? 'You asked to verify again. The calculator has decided that you need pen and paper.'
+                : 'Excellent. You bought stationery to verify a calculator result. The calculator remains emotionally unavailable.'}
+            </p>
+            {verifyPopupStep === 0 ? (
+              <button type="button" className="dark-popup-next" onClick={buyPenAndPaper}>Buy pen and paper <span>↗</span></button>
+            ) : (
+              <button type="button" className="dark-popup-next" onClick={() => setVerifyPopupStep(null)}>Return to wasting time <span>↩</span></button>
+            )}
+          </section>
+        </div>
+      )}
+      {showExplainPopup && (
+        <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="explain-popup-title">
+          <section className="dark-popup explain-popup">
+            <div className="dark-popup-kicker">EXPLANATION DEPARTMENT</div>
+            <div className="explain-popup-image"><img src="/memes-misc/saukaryilla.png" alt="സൗകര്യമില്ല" /></div>
+            <p id="explain-popup-title">സൗകര്യമില്ല </p>
+            <button type="button" className="dark-popup-next" onClick={() => setShowExplainPopup(false)}>Return to not knowing <span>↩</span></button>
           </section>
         </div>
       )}
@@ -280,7 +316,6 @@ function App() {
               <span className="screen-history">{history}{history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ' ? '' : ' ='}</span>
               <strong>{loading ? '...' : screenValue}</strong>
               <small className="screen-commentary">{message}</small>
-              {showSteps && <small>{levelSteps[level - 1].join(' → ')} → answer confirmed: {display}</small>}
             </div>
             {prediction && <div className="prediction">I predicted: <b>{prediction.value}</b> <span>{prediction.confidence}% confident · delete it yourself</span></div>}
             <div className="keypad">
@@ -295,7 +330,7 @@ function App() {
           <div className="level-badge">LEVEL {level}<span>{levelCopy[level - 1].label} · {level === 1 ? 'equivalent-ish' : level === 2 ? 'needlessly elaborate' : 'actively ridiculous'}</span></div>
           <div className="action-stack">
             <button onClick={explainSteps}>Explain steps <span>↗</span></button>
-            <button onClick={() => fakeAction('Verified. Verification verified.')}>Verify again <span>↻</span></button>
+            <button onClick={openVerifyPopup}>Verify again <span>↻</span></button>
             <button onClick={() => fakeAction('Why? Excellent question. No answer.')}>Why? <span>?</span></button>
             <button onClick={() => { setLevel(3); setMessage('Predictive mode activated. Your keystrokes are being judged.') }}>Predict my next number <span>⌁</span></button>
           </div>

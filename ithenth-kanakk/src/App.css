@@ -21,7 +21,10 @@
 @keyframes blink { to { opacity: .25; } }
 .meme-slot { height: 190px; aspect-ratio: auto; }.meme-slot img { width: auto; height: auto; max-width: 92%; max-height: 176px; object-fit: contain; transform: scale(.92) !important; }
 .screen-commentary { font-size: 9px !important; }
+.explain-meme { display: flex; align-items: center; gap: 10px; min-width: 0; margin-top: 10px; padding: 7px 10px; border: 1.5px dashed var(--ink); border-radius: 10px; background: #f8f4ec; color: var(--ink); }.explain-meme img { width: 42px; height: 42px; flex: 0 0 auto; border-radius: 7px; object-fit: contain; }.explain-meme strong { min-width: 0; overflow-wrap: anywhere; font: 700 14px 'Trebuchet MS', 'Noto Sans Malayalam', sans-serif; }
 .dark-popup-no { font-size: clamp(28px, 7vw, 38px) !important; line-height: 1.12 !important; text-align: center; }
+.verify-popup-icon { display: grid; place-items: center; width: 54px; height: 54px; margin: 16px 0; border: var(--line); border-radius: 16px; background: var(--yellow); font-size: 28px; transform: rotate(-7deg); }.verify-popup p { min-height: 105px; display: flex; align-items: center; }
+.explain-popup-image { display: grid; place-items: center; height: 190px; margin: 16px 0; border: 2px dashed currentColor; border-radius: 13px; background: rgba(255, 255, 255, .22); overflow: hidden; }.explain-popup-image img { width: auto; height: auto; max-width: 92%; max-height: 176px; object-fit: contain; }.explain-popup p { min-height: auto; justify-content: center; font: 700 32px/1.15 'Trebuchet MS', 'Noto Sans Malayalam', sans-serif; }
 @keyframes face-pop { 35% { transform: rotate(8deg) scale(1.2); } 70% { transform: rotate(-14deg) scale(.95); } }.mascot.face-reacting span { background: var(--pink); }
 @keyframes face-wink { 45% { transform: scaleY(.12); } 70% { transform: scaleY(1.15); } }
 .key.equals { grid-column: 1 / -1; background: var(--pink); }
