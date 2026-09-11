@@ -29,6 +29,8 @@ function App() {
   const [message, setMessage] = useState(moods[1])
   const [loading, setLoading] = useState(false)
   const [prediction, setPrediction] = useState(null)
+  const [justCalculated, setJustCalculated] = useState(false)
+  const [showTutorial, setShowTutorial] = useState(true)
 
   const transformed = useMemo(() => {
     if (display === '6.25') return level > 1 ? '√(39.0625) × 10⁰' : '6.25'
@@ -36,15 +38,19 @@ function App() {
   }, [display, level])
 
   const calculate = (nextInput = input) => {
-    const expression = nextInput.replace('×', '*').replace('÷', '/')
+    const expression = nextInput.replace('×', '*').replace('÷', '/').replace('−', '-').replace(/(\d+(?:\.\d+)?)%/g, '($1/100)')
     try {
+      if (!/^[\d+*/().\-\s]+$/.test(expression)) throw new Error('nope')
       const result = Function(`"use strict"; return (${expression})`)()
       if (!Number.isFinite(result)) throw new Error('nope')
       setDisplay(String(Number(result.toFixed(6))))
       setHistory(nextInput)
+      setInput(String(Number(result.toFixed(6))))
+      setJustCalculated(true)
       setMessage(moods[Math.floor(Math.random() * moods.length)])
     } catch {
       setDisplay('hmm?')
+      setHistory(nextInput)
       setMessage('ഇത് കണക്ക് അല്ല. പക്ഷേ ആത്മവിശ്വാസം അഭിനന്ദനാർഹമാണ്.')
     }
   }
@@ -54,14 +60,23 @@ function App() {
       setInput('')
       setDisplay('0')
       setHistory('fresh start')
+      setPrediction(null)
+      setJustCalculated(false)
+      return
+    }
+    if (value === '+/-') {
+      setInput((current) => current.startsWith('-') ? current.slice(1) : `-${current}`)
+      setJustCalculated(false)
       return
     }
     if (value === '=') {
       calculate()
       return
     }
-    const next = input === '25 ÷ 4' || input === '0' ? value : `${input}${value}`
+    const startsNew = justCalculated && !['+', '−', '×', '÷', '%'].includes(value)
+    const next = startsNew || input === '25 ÷ 4' || input === '0' ? value : `${input}${value}`
     setInput(next)
+    setJustCalculated(false)
     if (next.match(/[+\-×÷]$/)) {
       setPrediction(String(Math.floor(Math.random() * 89) + 11))
       setMessage('എനിക്ക് നിങ്ങളുടെ അടുത്ത നമ്പർ അറിയാം. ഏകദേശം.')
@@ -81,6 +96,23 @@ function App() {
 
   return (
     <main className="app-shell">
+      {showTutorial && (
+        <div className="tutorial-backdrop" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+          <section className="tutorial-card">
+            <div className="tutorial-kicker">WELCOME TO THE LEAST USEFUL CALCULATOR</div>
+            <div className="tutorial-icon">?</div>
+            <h2 id="tutorial-title">ഇതെന്ത് കണക്ക്?</h2>
+            <p className="tutorial-lead">A calculator that knows the answer, but would prefer to make you work for it.</p>
+            <div className="tutorial-grid">
+              <article><b>01 · സാധാരണം</b><p>Tap numbers and operators. It will calculate normally, which is frankly a little embarrassing.</p></article>
+              <article><b>02 · കുഴപ്പം</b><p>Choose a higher level or press <strong>MAKE IT WORSE</strong>. We add fake steps, dramatic pauses, and unnecessary mathematics.</p></article>
+              <article><b>03 · വെറുതെ</b><p>After an operator, we confidently guess your next number. We are usually wrong. Please reject it personally.</p></article>
+            </div>
+            <p className="tutorial-footnote">Nothing here will save you time. That is the point.</p>
+            <button className="tutorial-button" type="button" onClick={() => setShowTutorial(false)}>I understand absolutely nothing <span>↗</span></button>
+          </section>
+        </div>
+      )}
       <header className="topbar">
         <div className="brand-lockup">
           <span className="brand-mark">?</span>
