@@ -6,9 +6,7 @@
 ### Team Name:
 
 ### Team Members
-- Team Lead:
-- Member 2:
-- Member 3:
+- Team Lead: Rohan Kishore
 
 ### Project Description
 ഇതെന്ത് കണക്ക്? is a playful calculator that intentionally wastes time while still producing mathematically correct answers. Its colorful retro interface turns ordinary arithmetic into unnecessary equations, fake verification, and absurd predictions.

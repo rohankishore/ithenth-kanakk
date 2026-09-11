@@ -36,8 +36,8 @@ const levelCopy = [
 
 function App() {
   const [input, setInput] = useState('')
-  const [display, setDisplay] = useState('6.25')
-  const [history, setHistory] = useState('25 ÷ 4')
+  const [display, setDisplay] = useState('0')
+  const [history, setHistory] = useState('ready when you are')
   const [level, setLevel] = useState(1)
   const [message, setMessage] = useState(moods[1])
   const [loading, setLoading] = useState(false)
@@ -47,9 +47,13 @@ function App() {
   const [worseCount, setWorseCount] = useState(0)
 
   const transformed = useMemo(() => {
+    if (display === '0' && history === 'ready when you are') return '0'
     if (level === 1) {
-      const equivalent = display === '1' ? '√1 → 10⁰ → log₁₀(10)' : `${display} → (${display} × 1)`
-      return `${equivalent}${' → ' + display + ' ÷ 1'.repeat(worseCount)}`
+      const divisionParts = history.split('÷').map((part) => part.trim())
+      const equivalent = history.includes('÷') && divisionParts.length === 2
+        ? `${history} → ${divisionParts[0]} × (1 ÷ ${divisionParts[1]})`
+        : `${history} → (${history}) + 0`
+      return `${equivalent} → ${display}${' → equivalent'.repeat(worseCount)}`
     }
     if (level === 2) return `${display} → ${display} × 100 ÷ 100 → ${display} + 0${' → verified again'.repeat(worseCount)}`
     return `${display} → probably ${display} → definitely maybe ${display}${' → statistically suspicious'.repeat(worseCount)}`
