@@ -74,6 +74,7 @@ function App() {
   const [darkPopupStep, setDarkPopupStep] = useState(0)
   const [verifyPopupStep, setVerifyPopupStep] = useState(null)
   const [showTooFastPopup, setShowTooFastPopup] = useState(false)
+  const [showSettingsPopup, setShowSettingsPopup] = useState(false)
   const rapidClicks = useRef([])
   const [currentTime, setCurrentTime] = useState(getCurrentTime)
 
@@ -222,15 +223,17 @@ function App() {
     setFaceReacting(true)
     setShowFaceAchievement(true)
     setMessage('മുഖത്ത് ക്ലിക്ക് ചെയ്തോ? അതും കണക്കിന്റെ ഭാഗമല്ലായിരുന്നു.')
-    window.setTimeout(() => {
-      setFaceReacting(false)
-      setShowFaceAchievement(false)
-    }, 2400)
+    window.setTimeout(() => setFaceReacting(false), 2400)
+    window.setTimeout(() => setShowFaceAchievement(false), 10000)
   }
 
   const openDarkMode = () => {
     setDarkPopupStep(0)
     setShowDarkPopup(true)
+  }
+
+  const openSettings = () => {
+    setShowSettingsPopup(true)
   }
 
   const advanceDarkPopup = () => {
@@ -258,8 +261,8 @@ function App() {
             {Array.from({ length: 12 }, (_, index) => <i key={index} style={{ '--piece': index }} />)}
           </div>
           <span className="achievement-kicker">ACHIEVEMENT UNLOCKED</span>
-          <strong>Clicked the face</strong>
-          <p>നിങ്ങൾ ഒരു calculator-ന്റെ മുഖത്ത് ക്ലിക്ക് ചെയ്തു. കണക്ക് ഇപ്പോഴും കാത്തിരിക്കുന്നു.</p>
+          <strong>വേലേം കൂലീം ഇല്ലാത്തവൻ</strong>
+          <p>Congrats! You wasted valuable 5s of your life clicking on an emoji face instead of doing some REAL കണക്ക് </p>
         </div>
       )}
       {showDarkPopup && (
@@ -313,6 +316,22 @@ function App() {
           </section>
         </div>
       )}
+      {showSettingsPopup && (
+        <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="settings-popup-title">
+          <section className="dark-popup settings-popup">
+            <div className="dark-popup-kicker">SETTINGS, PROBABLY</div>
+            <div className="settings-dial" aria-hidden="true">⚙</div>
+            <h2 id="settings-popup-title">Important settings</h2>
+            <div className="fake-settings">
+              <span>Calculation seriousness</span><b>0%</b>
+              <span>Useful features</span><b>Not found</b>
+              <span>User patience</span><b>decreasing</b>
+            </div>
+            <p>Everything is already configured to waste your time. Changing this would be too useful.</p>
+            <button type="button" className="dark-popup-next" onClick={() => setShowSettingsPopup(false)}>Leave it useless <span>↩</span></button>
+          </section>
+        </div>
+      )}
       {showTutorial && (
         <div className="tutorial-backdrop" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
           <section className="tutorial-card">
@@ -336,7 +355,7 @@ function App() {
         </div>
         <div className="header-actions">
           <button className="icon-button dark-mode-button" type="button" aria-label="Dark mode" onClick={openDarkMode}><span aria-hidden="true">☾</span><b>Dark mode</b></button>
-          <button className="icon-button" type="button" aria-label="Settings" onClick={() => fakeAction('Settings? There are no settings.')}><span aria-hidden="true">⚙</span><b>Settings</b></button>
+          <button className="icon-button" type="button" aria-label="Settings" onClick={openSettings}><span aria-hidden="true">⚙</span><b>Settings</b></button>
         </div>
       </header>
 
