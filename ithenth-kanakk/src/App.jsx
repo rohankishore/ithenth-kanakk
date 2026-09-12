@@ -321,7 +321,7 @@ function App() {
           <section className="dark-popup settings-popup">
             <div className="dark-popup-kicker">SETTINGS, PROBABLY</div>
             <div className="settings-dial" aria-hidden="true">⚙</div>
-            <h2 id="settings-popup-title">Important settings</h2>
+            <h2 id="settings-popup-title">Important അല്ലാത്ത settings</h2>
             <div className="fake-settings">
               <span>Calculation seriousness</span><b>0%</b>
               <span>Useful features</span><b>Not found</b>
