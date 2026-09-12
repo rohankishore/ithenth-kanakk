@@ -71,6 +71,8 @@ function App() {
   const [faceReacting, setFaceReacting] = useState(false)
   const [showFaceAchievement, setShowFaceAchievement] = useState(false)
   const [showDivisionAchievement, setShowDivisionAchievement] = useState(false)
+  const [showAchievements, setShowAchievements] = useState(false)
+  const [unlockedAchievements, setUnlockedAchievements] = useState([])
   const [showDarkPopup, setShowDarkPopup] = useState(false)
   const [darkPopupStep, setDarkPopupStep] = useState(0)
   const [verifyPopupStep, setVerifyPopupStep] = useState(null)
@@ -85,6 +87,16 @@ function App() {
     'അങ്ങനിപ്പം ഒണ്ടാക്കണ്ട. വേണേൽ കണ്ണടച് ഇരുട്ടാക്ക് ',
   ]
   const darkPopupButtons = ['ഉവ്വ്', 'ആയ്കോട്ടെ ', 'എന്റെ അറിവില്ലായ്മ ക്ഷെമിക്കണം']
+  const achievements = [
+    { id: 'face', title: 'Clicked the face', description: 'You interacted with decorative anatomy.' },
+    { id: 'zero', title: 'Divided by zero', description: 'You challenged mathematics and lost politely.' },
+    { id: 'speed', title: 'Moderately impatient', description: 'The calculator asked you to slow down.' },
+    { id: 'worse', title: 'Made it worse', description: 'You saw the problem and increased it.' },
+  ]
+
+  const unlockAchievement = (achievementId) => {
+    setUnlockedAchievements((current) => current.includes(achievementId) ? current : [...current, achievementId])
+  }
 
   useEffect(() => {
     if (!showTutorial) return undefined
@@ -119,6 +131,7 @@ function App() {
     try {
       if (!/^[\d+*/().\-\s]+$/.test(expression)) throw new Error('nope')
       if (/\/\s*0(?:\s*(?:[+*/().-]|$))/.test(expression)) {
+        unlockAchievement('zero')
         setDisplay('∞?')
         setHistory(nextInput)
         setInput('∞?')
@@ -162,6 +175,7 @@ function App() {
     const now = Date.now()
     rapidClicks.current = [...rapidClicks.current.filter((clickTime) => now - clickTime < 2500), now]
     if (rapidClicks.current.length >= 4) {
+      unlockAchievement('speed')
       setShowTooFastPopup(true)
       rapidClicks.current = []
       setMessage('വേഗം കുറയ്ക്കൂ. ഈ calculator പോലും ഇത്രയും serious അല്ല.')
@@ -212,6 +226,7 @@ function App() {
   }
 
   const makeWorse = () => {
+    unlockAchievement('worse')
     setWorseCount((current) => Math.min(3, current + 1))
     setMessage(level === 1
       ? 'തുല്യമായ മറ്റൊരു സമവാക്യം ചേർത്തു. ആവശ്യമായിരുന്നില്ല.'
@@ -231,6 +246,7 @@ function App() {
   }
 
   const reactToFace = () => {
+    unlockAchievement('face')
     setFaceReacting(true)
     setShowFaceAchievement(true)
     setMessage('മുഖത്ത് ക്ലിക്ക് ചെയ്തോ? അതും കണക്കിന്റെ ഭാഗമല്ലായിരുന്നു.')
@@ -282,6 +298,25 @@ function App() {
           <span className="achievement-kicker">ACHIEVEMENT UNLOCKED</span>
           <strong>Divided by zero</strong>
           <p>പൂജ്യം പോലും ഇത് കണ്ടിട്ട് മാറിനിന്നു. നിങ്ങൾക്ക് ഇനി pen-and-paper പോലും സഹായിക്കില്ല.</p>
+        </div>
+      )}
+      {showAchievements && (
+        <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="achievements-title">
+          <section className="dark-popup achievements-popup">
+            <div className="dark-popup-kicker">THE THINGS YOU HAVE DONE</div>
+            <h2 id="achievements-title">Achievements</h2>
+            <p className="achievements-intro">A collection of consequences. Some are yours. Some are waiting.</p>
+            <div className="achievement-list">
+              {achievements.map((achievement) => {
+                const unlocked = unlockedAchievements.includes(achievement.id)
+                return <article className={unlocked ? 'achievement-item unlocked' : 'achievement-item'} key={achievement.id}>
+                  <span className="achievement-status">{unlocked ? '✓' : '?'}</span>
+                  <div><strong>{unlocked ? achievement.title : '???'}</strong><p>{unlocked ? achievement.description : 'Not unlocked. Probably for the best.'}</p></div>
+                </article>
+              })}
+            </div>
+            <button type="button" className="dark-popup-next" onClick={() => setShowAchievements(false)}>Return to unfinished business <span>↩</span></button>
+          </section>
         </div>
       )}
       {showDarkPopup && (
@@ -374,6 +409,7 @@ function App() {
         </div>
         <div className="header-actions">
           <button className="icon-button dark-mode-button" type="button" aria-label="Dark mode" onClick={openDarkMode}><span aria-hidden="true">☾</span><b>Dark mode</b></button>
+          <button className="icon-button achievements-button" type="button" aria-label="Achievements" onClick={() => setShowAchievements(true)}><span aria-hidden="true">🏆</span><b>Achievements</b></button>
           <button className="icon-button" type="button" aria-label="Settings" onClick={openSettings}><span aria-hidden="true">⚙</span><b>Settings</b></button>
         </div>
       </header>
