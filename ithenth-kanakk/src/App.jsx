@@ -54,10 +54,14 @@ const getCurrentTime = () => new Intl.DateTimeFormat('en-US', {
   minute: '2-digit',
 }).format(new Date())
 
-const playAudio = (path) => {
+const playAudio = (path, durationMs = 3000) => {
   try {
     const audio = new Audio(path)
     audio.play().catch(() => {})
+    window.setTimeout(() => {
+      audio.pause()
+      audio.currentTime = 0
+    }, durationMs)
   } catch {
     // Ignore audio playback error
   }
