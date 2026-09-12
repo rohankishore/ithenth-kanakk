@@ -69,6 +69,7 @@ function App() {
   const [showExplainPopup, setShowExplainPopup] = useState(false)
   const [confidence, setConfidence] = useState('98.7')
   const [faceReacting, setFaceReacting] = useState(false)
+  const [showFaceAchievement, setShowFaceAchievement] = useState(false)
   const [showDarkPopup, setShowDarkPopup] = useState(false)
   const [darkPopupStep, setDarkPopupStep] = useState(0)
   const [verifyPopupStep, setVerifyPopupStep] = useState(null)
@@ -219,8 +220,12 @@ function App() {
 
   const reactToFace = () => {
     setFaceReacting(true)
+    setShowFaceAchievement(true)
     setMessage('മുഖത്ത് ക്ലിക്ക് ചെയ്തോ? അതും കണക്കിന്റെ ഭാഗമല്ലായിരുന്നു.')
-    window.setTimeout(() => setFaceReacting(false), 700)
+    window.setTimeout(() => {
+      setFaceReacting(false)
+      setShowFaceAchievement(false)
+    }, 2400)
   }
 
   const openDarkMode = () => {
@@ -247,6 +252,16 @@ function App() {
 
   return (
     <main className="app-shell">
+      {showFaceAchievement && (
+        <div className="achievement-toast" role="status">
+          <div className="confetti" aria-hidden="true">
+            {Array.from({ length: 12 }, (_, index) => <i key={index} style={{ '--piece': index }} />)}
+          </div>
+          <span className="achievement-kicker">ACHIEVEMENT UNLOCKED</span>
+          <strong>Clicked the face</strong>
+          <p>നിങ്ങൾ ഒരു calculator-ന്റെ മുഖത്ത് ക്ലിക്ക് ചെയ്തു. കണക്ക് ഇപ്പോഴും കാത്തിരിക്കുന്നു.</p>
+        </div>
+      )}
       {showDarkPopup && (
         <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="dark-popup-title">
           <section className="dark-popup">
