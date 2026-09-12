@@ -46,13 +46,13 @@ npm run dev
 
 ## Uselessness System
 
-### Level 1 — അനാവശ്യം (Unnecessary)
+### Level 1 — അനാവശ്യം
 Attempts a calculation, then disguises the result as an unnecessarily complicated equation. It is correct only occasionally.
 
-### Level 2 — അമിതം (Excessive)
+### Level 2 — അമിതം
 Adds pointless conversions, repeated verification, fake processing, and intermediate steps before showing a result that is usually wrong anyway.
 
-### Level 3 — അസംബന്ധം (Absurd)
+### Level 3 — അസംബന്ധം 
 Pretends to predict the next number after an operator, autofills a random guess with absurd confidence, shifts digits, and returns wrong answers with suspicious certainty.
 
 ### Controls

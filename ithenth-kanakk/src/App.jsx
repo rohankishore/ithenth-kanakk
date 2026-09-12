@@ -457,7 +457,7 @@ function App() {
         </aside>
 
         <section className="calculator-wrap">
-          <div className="calculator">
+          <div className={`calculator worse-${worseCount}`}>
             <div className="calc-top"><span className="tiny-light" /> IDK-6767 <span>{currentTime}</span></div>
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
               <span className="screen-history">{history}{history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ' ? '' : ' ='}</span>
