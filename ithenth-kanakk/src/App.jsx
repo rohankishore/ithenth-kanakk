@@ -49,6 +49,11 @@ const shuffleDigits = (value) => {
   return `${sign}${digits.join('')}${fraction ? `.${fraction}` : ''}`
 }
 
+const getCurrentTime = () => new Intl.DateTimeFormat('en-US', {
+  hour: 'numeric',
+  minute: '2-digit',
+}).format(new Date())
+
 function App() {
   const [input, setInput] = useState('')
   const [display, setDisplay] = useState('0')
@@ -69,6 +74,7 @@ function App() {
   const [verifyPopupStep, setVerifyPopupStep] = useState(null)
   const [showTooFastPopup, setShowTooFastPopup] = useState(false)
   const rapidClicks = useRef([])
+  const [currentTime, setCurrentTime] = useState(getCurrentTime)
 
   const darkPopupText = [
     'ഉറപ്പാണോ മിത്രമേ?',
@@ -84,6 +90,11 @@ function App() {
     }, 1700)
     return () => window.clearInterval(shuffle)
   }, [showTutorial])
+
+  useEffect(() => {
+    const clock = window.setInterval(() => setCurrentTime(getCurrentTime()), 60000)
+    return () => window.clearInterval(clock)
+  }, [])
 
   const transformed = useMemo(() => {
     if (display === '0' && history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ') return '0'
@@ -326,12 +337,15 @@ function App() {
               </button>
             ))}
           </div>
-          <button className={`mascot ${faceReacting ? 'face-reacting' : ''}`} type="button" aria-label="React with calculator face" onClick={reactToFace}><span>◉</span><span>◉</span><b>⌁</b></button>
+          <div className="mascot-wrap">
+            {faceReacting && <div className="face-speech">മുഖത്ത് ക്ലിക്ക് ചെയ്തോ?<br />അതും കണക്കിന്റെ ഭാഗമല്ലായിരുന്നു.</div>}
+            <button className={`mascot ${faceReacting ? 'face-reacting' : ''}`} type="button" aria-label="React with calculator face" onClick={reactToFace}><span>◉</span><span>◉</span><b>⌁</b></button>
+          </div>
         </aside>
 
         <section className="calculator-wrap">
           <div className="calculator">
-            <div className="calc-top"><span className="tiny-light" /> IDK-6767 <span>9:41</span></div>
+            <div className="calc-top"><span className="tiny-light" /> IDK-6767 <span>{currentTime}</span></div>
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
               <span className="screen-history">{history}{history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ' ? '' : ' ='}</span>
               <strong>{loading ? '...' : screenValue}</strong>
