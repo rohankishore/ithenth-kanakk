@@ -54,6 +54,15 @@ const getCurrentTime = () => new Intl.DateTimeFormat('en-US', {
   minute: '2-digit',
 }).format(new Date())
 
+const playAudio = (path) => {
+  try {
+    const audio = new Audio(path)
+    audio.play().catch(() => {})
+  } catch {
+    // Ignore audio playback error
+  }
+}
+
 const DieFace = ({ value }) => (
   <div className={`die-face die-${value}`}>
     {value === 1 && <span className="dot dot-center" />}
@@ -155,6 +164,7 @@ function App() {
   const [verifyPopupStep, setVerifyPopupStep] = useState(null)
   const [showTooFastPopup, setShowTooFastPopup] = useState(false)
   const [showSettingsPopup, setShowSettingsPopup] = useState(false)
+  const [showWhyPopup, setShowWhyPopup] = useState(false)
   const rapidClicks = useRef([])
   const [currentTime, setCurrentTime] = useState(getCurrentTime)
   const [clickedKey, setClickedKey] = useState(null)
@@ -216,6 +226,7 @@ function App() {
         setJustCalculated(true)
         setMessage('പൂജ്യത്തെ കൊണ്ട് divide ചെയ്യാൻ ശ്രമിച്ചു. ധൈര്യം ഉണ്ട്, logic ഇല്ല.')
         setShowDivisionAchievement(true)
+        playAudio('/audio/laugh.mp3')
         window.setTimeout(() => setShowDivisionAchievement(false), 6000)
         return
       }
@@ -349,6 +360,11 @@ function App() {
     setShowExplainPopup(true)
   }
 
+  const openWhyPopup = () => {
+    setShowWhyPopup(true)
+    playAudio('/audio/kettikan.mp3')
+  }
+
   const reactToFace = () => {
     unlockAchievement('face')
     setFaceReacting(true)
@@ -471,6 +487,19 @@ function App() {
             <p id="too-fast-title">Please slow down. This is not a useful app.</p>
             <small>You clicked 4 times in 2.5 seconds. Nothing became more productive.</small>
             <button type="button" className="dark-popup-next" onClick={() => setShowTooFastPopup(false)}>I will waste time slower <span>↗</span></button>
+          </section>
+        </div>
+      )}
+      {showWhyPopup && (
+        <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="why-popup-title">
+          <section className="dark-popup why-popup">
+            <div className="dark-popup-kicker">PHILOSOPHICAL INQUIRY</div>
+            <div className="why-popup-icon" aria-hidden="true">?</div>
+            <h2 id="why-popup-title">ആരെ കെട്ടിക്കാൻ ?</h2>
+            <p className="why-popup-text">ഉത്തരം കിട്ടിയില്ലെങ്കിൽ ദയവായി ദൈവത്തോട് ചോദിക്കുക.</p>
+            <button type="button" className="dark-popup-next" onClick={() => setShowWhyPopup(false)}>
+              Accept the mystery <span>↩</span>
+            </button>
           </section>
         </div>
       )}
@@ -622,8 +651,7 @@ function App() {
           <div className="action-stack">
             <button onClick={explainSteps}>Explain steps <span>↗</span></button>
             <button onClick={openVerifyPopup}>Verify again <span>↻</span></button>
-            <button onClick={() => fakeAction('Why? Excellent question. No answer.')}>Why? <span>?</span></button>
-            <button onClick={() => { setLevel(3); setMessage('Predictive mode activated. Your keystrokes are being judged.') }}>Predict my next number <span>⌁</span></button>
+            <button onClick={openWhyPopup}>Why? <span>?</span></button>
           </div>
           <button className="worse-button" onClick={makeWorse}>MAKE IT WORSE <span>↗</span></button>
           <p className="fine-print">*confidence is a feeling, not a measurement</p>

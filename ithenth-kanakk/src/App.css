@@ -77,3 +77,6 @@ button:focus-visible { outline: 3px solid var(--pink); outline-offset: 3px; }
 .dice-readout b { font-size: 24px; color: #a65b78; }
 .volume-icon { font-size: 28px; }
 @media (max-width: 650px) { .dice-grid { grid-template-columns: repeat(4, 1fr); gap: 10px 8px; } }
+.why-popup-icon { display: grid; place-items: center; width: 54px; height: 54px; margin: 16px 0 10px; border: var(--line); border-radius: 16px; background: var(--mint); font: 700 32px 'Space Grotesk', sans-serif; transform: rotate(6deg); box-shadow: 3px 3px 0 var(--ink); }
+.why-popup-text { min-height: auto; margin-bottom: 12px; font-size: 17px; line-height: 1.4; }
+.why-popup-malayalam { display: block; margin-bottom: 18px; color: #74716a; font: 600 12px/1.4 'Trebuchet MS', 'Noto Sans Malayalam', sans-serif; }
