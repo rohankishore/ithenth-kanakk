@@ -70,6 +70,7 @@ function App() {
   const [confidence, setConfidence] = useState('98.7')
   const [faceReacting, setFaceReacting] = useState(false)
   const [showFaceAchievement, setShowFaceAchievement] = useState(false)
+  const [showDivisionAchievement, setShowDivisionAchievement] = useState(false)
   const [showDarkPopup, setShowDarkPopup] = useState(false)
   const [darkPopupStep, setDarkPopupStep] = useState(0)
   const [verifyPopupStep, setVerifyPopupStep] = useState(null)
@@ -117,6 +118,16 @@ function App() {
     const expression = nextInput.replace('×', '*').replace('÷', '/').replace('−', '-').replace(/(\d+(?:\.\d+)?)%/g, '($1/100)')
     try {
       if (!/^[\d+*/().\-\s]+$/.test(expression)) throw new Error('nope')
+      if (/\/\s*0(?:\s*(?:[+*/().-]|$))/.test(expression)) {
+        setDisplay('∞?')
+        setHistory(nextInput)
+        setInput('∞?')
+        setJustCalculated(true)
+        setMessage('പൂജ്യത്തെ കൊണ്ട് divide ചെയ്യാൻ ശ്രമിച്ചു. ധൈര്യം ഉണ്ട്, logic ഇല്ല.')
+        setShowDivisionAchievement(true)
+        window.setTimeout(() => setShowDivisionAchievement(false), 10000)
+        return
+      }
       const result = Function(`"use strict"; return (${expression})`)()
       if (!Number.isFinite(result)) throw new Error('nope')
       const correctResult = Number(result.toFixed(6))
@@ -263,6 +274,14 @@ function App() {
           <span className="achievement-kicker">ACHIEVEMENT UNLOCKED</span>
           <strong>വേലേം കൂലീം ഇല്ലാത്തവൻ</strong>
           <p>Congrats! You wasted valuable 5s of your life clicking on an emoji face instead of doing some REAL കണക്ക് </p>
+        </div>
+      )}
+      {showDivisionAchievement && (
+        <div className="achievement-toast division-achievement" role="status">
+          <img src="/memes-dark/4.png" alt="Division by zero reaction meme" />
+          <span className="achievement-kicker">ACHIEVEMENT UNLOCKED</span>
+          <strong>Divided by zero</strong>
+          <p>പൂജ്യം പോലും ഇത് കണ്ടിട്ട് മാറിനിന്നു. നിങ്ങൾക്ക് ഇനി pen-and-paper പോലും സഹായിക്കില്ല.</p>
         </div>
       )}
       {showDarkPopup && (
