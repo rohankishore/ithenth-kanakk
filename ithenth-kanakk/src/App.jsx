@@ -220,7 +220,7 @@ function App() {
         setInput(`${next}${valueGuess}`)
         setMessage('നിങ്ങളുടെ അടുത്ത നമ്പർ ഞാൻ സ്വയം ചേർത്തു. ദയവായി അതിൽ നിരാശപ്പെടുക.')
       } else {
-        setMessage(level === 2 ? 'അമിതമായ verification queue-ലേക്ക് ചേർത്തു.' : 'ഒരു operator കണ്ടു. ഇപ്പോൾ ഗണിതം ആരംഭിക്കാം.')
+        setMessage(level === 2 ? '' : '')
       }
     }
   }
@@ -249,7 +249,6 @@ function App() {
     unlockAchievement('face')
     setFaceReacting(true)
     setShowFaceAchievement(true)
-    setMessage('മുഖത്ത് ക്ലിക്ക് ചെയ്തോ? അതും കണക്കിന്റെ ഭാഗമല്ലായിരുന്നു.')
     window.setTimeout(() => setFaceReacting(false), 2400)
     window.setTimeout(() => setShowFaceAchievement(false), 10000)
   }
