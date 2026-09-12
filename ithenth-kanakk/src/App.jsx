@@ -67,6 +67,8 @@ function App() {
   const [showDarkPopup, setShowDarkPopup] = useState(false)
   const [darkPopupStep, setDarkPopupStep] = useState(0)
   const [verifyPopupStep, setVerifyPopupStep] = useState(null)
+  const [showTooFastPopup, setShowTooFastPopup] = useState(false)
+  const rapidClicks = useRef([])
 
   const darkPopupText = [
     'ഉറപ്പാണോ മിത്രമേ?',
@@ -133,6 +135,13 @@ function App() {
   }
 
   const press = (value) => {
+    const now = Date.now()
+    rapidClicks.current = [...rapidClicks.current.filter((clickTime) => now - clickTime < 1100), now]
+    if (rapidClicks.current.length >= 6) {
+      setShowTooFastPopup(true)
+      rapidClicks.current = []
+      setMessage('വേഗം കുറയ്ക്കൂ. ഈ calculator പോലും ഇത്രയും serious അല്ല.')
+    }
     if (value === 'C') {
       setInput('')
       setDisplay('0')
@@ -264,6 +273,17 @@ function App() {
             <div className="explain-popup-image"><img src="/memes-misc/saukaryilla.png" alt="സൗകര്യമില്ല" /></div>
             <p id="explain-popup-title">സൗകര്യമില്ല </p>
             <button type="button" className="dark-popup-next" onClick={() => setShowExplainPopup(false)}>Return to not knowing <span>↩</span></button>
+          </section>
+        </div>
+      )}
+      {showTooFastPopup && (
+        <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="too-fast-title">
+          <section className="dark-popup too-fast-popup">
+            <div className="dark-popup-kicker">UNNECESSARY INTERRUPTION</div>
+            <div className="too-fast-icon" aria-hidden="true">!</div>
+            <p id="too-fast-title">Please slow down. This is not a useful app.</p>
+            <small>You clicked 6 times in barely one second. Nothing became more productive.</small>
+            <button type="button" className="dark-popup-next" onClick={() => setShowTooFastPopup(false)}>I will waste time slower <span>↗</span></button>
           </section>
         </div>
       )}
