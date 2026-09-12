@@ -3,7 +3,7 @@
 # ഇതെന്ത് കണക്ക്? (Ithenth Kanakku?)
 
 ## Live Demo
-[ithenth-kanakk.vercel.app](https://ithenth-kanakk.vercel.app)
+[ithenth-kanakk.vercel.app](https://ithenthkanakk.vercel.app)
 
 ## Basic Details
 ### Team Name:
