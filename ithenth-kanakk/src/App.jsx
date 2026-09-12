@@ -138,7 +138,7 @@ function App() {
         setJustCalculated(true)
         setMessage('പൂജ്യത്തെ കൊണ്ട് divide ചെയ്യാൻ ശ്രമിച്ചു. ധൈര്യം ഉണ്ട്, logic ഇല്ല.')
         setShowDivisionAchievement(true)
-        window.setTimeout(() => setShowDivisionAchievement(false), 10000)
+        window.setTimeout(() => setShowDivisionAchievement(false), 6000)
         return
       }
       const result = Function(`"use strict"; return (${expression})`)()
@@ -250,7 +250,7 @@ function App() {
     setFaceReacting(true)
     setShowFaceAchievement(true)
     window.setTimeout(() => setFaceReacting(false), 2400)
-    window.setTimeout(() => setShowFaceAchievement(false), 10000)
+    window.setTimeout(() => setShowFaceAchievement(false), 6000)
   }
 
   const openDarkMode = () => {
