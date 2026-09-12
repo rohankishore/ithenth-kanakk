@@ -145,8 +145,8 @@ function App() {
       const result = Function(`"use strict"; return (${expression})`)()
       if (!Number.isFinite(result)) throw new Error('nope')
       const correctResult = Number(result.toFixed(6))
-      const isWrongLevelThreeAnswer = level === 3 && Math.random() < 0.5
-      const shownResult = isWrongLevelThreeAnswer
+      const isWrongAnswer = Math.random() < 0.9
+      const shownResult = isWrongAnswer
         ? Number((correctResult + (correctResult === 0 ? 7 : Math.max(1, Math.round(Math.abs(correctResult) * 0.23)))).toFixed(6))
         : correctResult
       const isShiftedLevelThreeAnswer = level === 3 && Math.random() < 0.45 && String(shownResult).replace(/\D/g, '').length > 1
@@ -155,11 +155,15 @@ function App() {
       setHistory(nextInput)
       setInput(visibleResult)
       setJustCalculated(true)
-      if (level === 1) setMessage('കൃത്യമായ ഉത്തരം. പക്ഷേ നേരെ പറയുന്നത് മര്യാദയല്ല.')
-      if (level === 2) setMessage('ഉത്തരം ശരിയാണ്. അതിലേക്ക് എത്താൻ നാലു ഘട്ടങ്ങൾ മാത്രം വേണ്ടിയിരുന്നു.')
+      if (level === 1) setMessage(isWrongAnswer
+        ? 'ഉത്തരം തെറ്റാണ്. പക്ഷേ സമവാക്യം വളരെ ആത്മവിശ്വാസത്തോടെ കാണുന്നു.'
+        : 'ഇത്തവണ ശരിയായി. ഇത് ഒരു അപകടം മാത്രമായിരുന്നു.')
+      if (level === 2) setMessage(isWrongAnswer
+        ? 'Verification പൂർത്തിയായി. ഫലം ഇപ്പോഴും തെറ്റാണ്.'
+        : 'ഉത്തരം ശരിയാണ്. ഇത്രയും verification കഴിഞ്ഞിട്ട് തെറ്റാൻ പാടില്ലായിരുന്നു.')
       if (level === 3) {
-        setConfidence(isWrongLevelThreeAnswer ? (38 + Math.random() * 18).toFixed(1) : '98.7')
-        setMessage(isWrongLevelThreeAnswer
+        setConfidence(isWrongAnswer ? (38 + Math.random() * 18).toFixed(1) : '98.7')
+        setMessage(isWrongAnswer
           ? 'ഉത്തരം തെറ്റായിരിക്കാം. വേണേൽ സ്വയം കണക്ക് കൂട്ടുക!'
           : isShiftedLevelThreeAnswer
             ? `അക്കങ്ങൾ അവരുടെ സ്ഥാനം മാറ്റി. ${visibleResult} ഇപ്പോൾ കൂടുതൽ വിശ്വസനീയമാണ്.`
