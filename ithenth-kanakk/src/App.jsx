@@ -156,17 +156,17 @@ function App() {
       setInput(visibleResult)
       setJustCalculated(true)
       if (level === 1) setMessage(isWrongAnswer
-        ? 'ഉത്തരം തെറ്റാണ്. പക്ഷേ സമവാക്യം വളരെ ആത്മവിശ്വാസത്തോടെ കാണുന്നു.'
+        ? 'probably correct'
         : 'ഇത്തവണ ശരിയായി. ഇത് ഒരു അപകടം മാത്രമായിരുന്നു.')
       if (level === 2) setMessage(isWrongAnswer
-        ? 'Verification പൂർത്തിയായി. ഫലം ഇപ്പോഴും തെറ്റാണ്.'
+        ? 'doubt ndel swayam cheyyuka'
         : 'ഉത്തരം ശരിയാണ്. ഇത്രയും verification കഴിഞ്ഞിട്ട് തെറ്റാൻ പാടില്ലായിരുന്നു.')
       if (level === 3) {
         setConfidence(isWrongAnswer ? (38 + Math.random() * 18).toFixed(1) : '98.7')
         setMessage(isWrongAnswer
           ? 'ഉത്തരം തെറ്റായിരിക്കാം. വേണേൽ സ്വയം കണക്ക് കൂട്ടുക!'
           : isShiftedLevelThreeAnswer
-            ? `അക്കങ്ങൾ അവരുടെ സ്ഥാനം മാറ്റി. ${visibleResult} ഇപ്പോൾ കൂടുതൽ വിശ്വസനീയമാണ്.`
+            ? ``
             : 'ഇത്തവണ ശരിയായി. ഇത് ആവർത്തിക്കുമെന്ന് വാഗ്ദാനം ചെയ്യുന്നില്ല.')
       }
     } catch {
