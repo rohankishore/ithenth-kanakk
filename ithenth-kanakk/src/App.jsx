@@ -65,7 +65,26 @@ function App() {
   const [justCalculated, setJustCalculated] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
   const [worseCount, setWorseCount] = useState(0)
+  const [numberMap, setNumberMap] = useState({})
   const [tutorialOrder, setTutorialOrder] = useState([0, 1, 2])
+
+  const generateShuffledNumberMap = () => {
+    const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    const shuffled = [...digits]
+    // Shuffle digit labels until at least some numbers swap places
+    do {
+      for (let i = shuffled.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+      }
+    } while (shuffled.every((d, i) => d === digits[i]))
+
+    const map = {}
+    digits.forEach((digit, idx) => {
+      map[digit] = shuffled[idx]
+    })
+    return map
+  }
   const [showExplainPopup, setShowExplainPopup] = useState(false)
   const [confidence, setConfidence] = useState('98.7')
   const [faceReacting, setFaceReacting] = useState(false)
@@ -211,6 +230,7 @@ function App() {
       setPrediction(null)
       setJustCalculated(false)
       setWorseCount(0)
+      setNumberMap({})
       return
     }
     if (value === '⌫') {
@@ -251,7 +271,9 @@ function App() {
 
   const makeWorse = () => {
     unlockAchievement('worse')
-    setWorseCount((current) => Math.min(3, current + 1))
+    const nextCount = worseCount + 1
+    setWorseCount(nextCount)
+    setNumberMap(generateShuffledNumberMap())
     setMessage(level === 1
       ? 'തുല്യമായ മറ്റൊരു സമവാക്യം ചേർത്തു. ആവശ്യമായിരുന്നില്ല.'
       : level === 2
@@ -443,7 +465,7 @@ function App() {
           <div className="meters">
             <p className="section-label">USELESSNESS LEVELS</p>
             {levelCopy.map((item, index) => (
-              <button className={`meter meter-${item.color}`} key={item.label} onClick={() => { setLevel(index + 1); setWorseCount(0); setPrediction(null); setMessage(`Level ${index + 1}: ${item.label}. A bold choice.`) }}>
+              <button className={`meter meter-${item.color}`} key={item.label} onClick={() => { setLevel(index + 1); setWorseCount(0); setNumberMap({}); setPrediction(null); setMessage(`Level ${index + 1}: ${item.label}. A bold choice.`) }}>
                 <span className="meter-top"><b>{item.label}</b><small>{item.english}</small></span>
                 <span className="meter-track"><i style={{ width: `${item.value}%` }} /></span>
                 <strong>{item.value}%</strong>
@@ -457,7 +479,7 @@ function App() {
         </aside>
 
         <section className="calculator-wrap">
-          <div className={`calculator worse-${worseCount}`}>
+          <div className={`calculator worse-${Math.min(3, worseCount)}`}>
             <div className="calc-top"><span className="tiny-light" /> IDK-6767 <span>{currentTime}</span></div>
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
               <span className="screen-history">{history}{history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ' ? '' : ' ='}</span>
@@ -466,9 +488,20 @@ function App() {
             </div>
             {prediction && <div className="prediction">I predicted: <b>{prediction.value}</b> <span>{prediction.confidence}% confident · delete it yourself</span></div>}
             <div className="keypad">
-              {['C', '⌫', '+/-', '%', '7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '−', '0', '.', '+', '='].map((key) => (
-                <button key={key} className={`key ${clickedKey === key ? 'key-clicked' : ''} ${['÷', '×', '−', '+', '='].includes(key) ? 'operator' : ''} ${key === 'C' || key === '⌫' || key === '+/-' || key === '%' ? 'utility' : ''} ${key === '=' ? 'equals' : ''}`} onClick={() => press(key)}>{key}</button>
-              ))}
+              {['C', '⌫', '+/-', '%', '7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '−', '0', '.', '+', '='].map((key) => {
+                const isNumber = /^\d$/.test(key)
+                const displayKey = isNumber && numberMap[key] ? numberMap[key] : key
+
+                return (
+                  <button
+                    key={key}
+                    className={`key ${clickedKey === displayKey ? 'key-clicked' : ''} ${['÷', '×', '−', '+', '='].includes(key) ? 'operator' : ''} ${key === 'C' || key === '⌫' || key === '+/-' || key === '%' ? 'utility' : ''} ${key === '=' ? 'equals' : ''}`}
+                    onClick={() => press(displayKey)}
+                  >
+                    {displayKey}
+                  </button>
+                )
+              })}
             </div>
           </div>
         </section>
