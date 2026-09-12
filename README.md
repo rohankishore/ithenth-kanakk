@@ -2,6 +2,9 @@
 
 # ഇതെന്ത് കണക്ക്? (Ithenth Kanakku?)
 
+## Live Demo
+[ithenth-kanakk.vercel.app](https://ithenth-kanakk.vercel.app)
+
 ## Basic Details
 ### Team Name:
 
@@ -9,13 +12,13 @@
 - Team Lead: Rohan Kishore
 
 ### Project Description
-ഇതെന്ത് കണക്ക്? is a playful calculator that intentionally wastes time while still producing mathematically correct answers. Its colorful retro interface turns ordinary arithmetic into unnecessary equations, fake verification, and absurd predictions.
+ഇതെന്ത് കണക്ക്? is a playful calculator that intentionally wastes time and is wrong 90% of the time. Its colorful retro interface turns ordinary arithmetic into unnecessary equations, fake verification, absurd predictions, memes, and sarcastic interruptions.
 
 ### The Problem (that doesn't exist)
 People keep getting calculator answers too quickly and with too little drama.
 
 ### The Solution (that nobody asked for)
-Three progressively pointless levels transform every calculation into a more elaborate experience, complete with sarcastic commentary and a button that makes everything worse.
+Three progressively pointless levels transform every calculation into a more elaborate experience, complete with sarcastic commentary, unreliable answers, achievement popups, meme reactions, and a button that makes everything worse.
 
 ## Technical Details
 ### Technologies/Components Used
@@ -44,13 +47,13 @@ npm run dev
 ## Uselessness System
 
 ### Level 1 — അനാവശ്യം (Unnecessary)
-Calculates the correct answer, then represents it as an unnecessarily complicated equivalent equation.
+Attempts a calculation, then disguises the result as an unnecessarily complicated equation. It is correct only occasionally.
 
 ### Level 2 — അമിതം (Excessive)
-Adds pointless conversions, repeated verification, fake processing, and intermediate steps before showing the same correct result.
+Adds pointless conversions, repeated verification, fake processing, and intermediate steps before showing a result that is usually wrong anyway.
 
 ### Level 3 — അസംബന്ധം (Absurd)
-Pretends to predict the next number after an operator, autofills a random guess with absurd confidence, and reacts dramatically when rejected.
+Pretends to predict the next number after an operator, autofills a random guess with absurd confidence, shifts digits, and returns wrong answers with suspicious certainty.
 
 ### Controls
 - `Make it Worse` increases the pointless complexity within the current level.
@@ -58,6 +61,9 @@ Pretends to predict the next number after an operator, autofills a random guess 
 - `+/-` changes the sign.
 - `%` converts a percentage in the expression.
 - `Explain steps`, `Verify again`, and `Why?` provide intentionally unhelpful responses.
+- Face clicks, division by zero, rapid clicking, and `Make it Worse` can unlock achievements.
+- Dark mode refuses to work, but opens a three-stage meme ceremony.
+- Settings opens a fake settings panel where useful features cannot be found.
 
 ### Project Documentation
 For Software:
