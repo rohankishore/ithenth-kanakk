@@ -50,3 +50,30 @@ button:focus-visible { outline: 3px solid var(--pink); outline-offset: 3px; }
 .key.equals { grid-column: 1 / -1; background: var(--pink); }
 @media (max-width: 980px) { .dashboard { grid-template-columns: 170px minmax(300px, 380px); gap: 28px; }.right-rail { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; align-items: start; }.right-rail .action-stack { grid-column: 1 / -1; grid-row: 2; grid-template-columns: repeat(4, 1fr); }.worse-button { grid-column: 1 / -1; }.fine-print { grid-column: 1 / -1; } }
 @media (max-width: 650px) { .app-shell { padding: 18px 15px; }.topbar { padding-bottom: 18px; }.header-note { display: none; } h1 { font-size: 25px; }.dashboard { display: flex; flex-direction: column; align-items: stretch; padding: 35px 0 25px; min-height: auto; }.left-rail { order: 2; }.calculator-wrap { order: 1; }.right-rail { order: 3; display: flex; }.meters { grid-template-columns: repeat(3, 1fr); }.meter { padding: 9px 7px; }.meter-top { display: block; }.meter-top b { font-size: 12px; display: block; }.meter-top small { font-size: 7px; }.meter-track { margin: 6px 0 3px; }.sticker, .mascot { display: none; }.right-rail .action-stack { display: grid; grid-template-columns: 1fr 1fr; }.speech-bubble { left: -5px; }.calculator { padding: 13px; }.key { min-height: 50px; } footer { font-size: 8px; line-height: 1.8; } .tutorial-grid { grid-template-columns: 1fr; } .tutorial-lead { font-size: 16px; }.tutorial-card { padding: 24px 20px; } }
+.dice-popup { width: min(600px, 95vw) !important; padding: 20px 22px !important; }
+.dice-subtitle { font: 500 12px 'DM Mono', monospace; color: #74716a; margin: 4px 0 14px; }
+.dice-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px 6px; padding: 14px 10px; border: var(--line); border-radius: 14px; background: #f0e8dd; margin-bottom: 16px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+.die-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.die-face { position: relative; width: 34px; height: 34px; background: #ffffff; border: 2px solid var(--ink); border-radius: 6px; box-shadow: 2px 2px 0 var(--ink); transition: transform 0.1s ease; }
+.die-item.held .die-face { border-color: var(--ink); background: #fffbe6; box-shadow: 0 0 0 2px var(--pink), 2px 2px 0 var(--ink); }
+.rolling-die .die-face { animation: die-shake 0.08s infinite alternate; }
+@keyframes die-shake { from { transform: translateY(-2px) rotate(-4deg); } to { transform: translateY(2px) rotate(4deg); } }
+.die-face .dot { position: absolute; width: 6px; height: 6px; background: #000000; border-radius: 50%; }
+.dot-center { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.dot-tl { top: 5px; left: 5px; }
+.dot-tr { top: 5px; right: 5px; }
+.dot-ml { top: 50%; left: 5px; transform: translateY(-50%); }
+.dot-mr { top: 50%; right: 5px; transform: translateY(-50%); }
+.dot-bl { bottom: 5px; left: 5px; }
+.dot-br { bottom: 5px; right: 5px; }
+.hold-label { display: flex; align-items: center; gap: 2px; font: 700 9px 'DM Mono', monospace; color: var(--ink); cursor: pointer; user-select: none; }
+.hold-label input { cursor: pointer; accent-color: var(--ink); margin: 0; }
+.dice-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.roll-btn { flex: 1; min-height: 52px; border: var(--line); border-radius: 12px; background: #dedede; color: var(--ink); font: 700 22px 'Space Grotesk', sans-serif; box-shadow: 4px 4px 0 var(--ink); cursor: pointer; }
+.roll-btn:hover { background: #ffffff; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
+.roll-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.roll-btn:disabled { opacity: 0.7; cursor: wait; }
+.dice-readout { display: flex; align-items: center; gap: 8px; font: 700 18px 'Space Grotesk', sans-serif; color: var(--ink); white-space: nowrap; }
+.dice-readout b { font-size: 24px; color: #a65b78; }
+.volume-icon { font-size: 28px; }
+@media (max-width: 650px) { .dice-grid { grid-template-columns: repeat(4, 1fr); gap: 10px 8px; } }

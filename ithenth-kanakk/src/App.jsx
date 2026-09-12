@@ -54,6 +54,17 @@ const getCurrentTime = () => new Intl.DateTimeFormat('en-US', {
   minute: '2-digit',
 }).format(new Date())
 
+const DieFace = ({ value }) => (
+  <div className={`die-face die-${value}`}>
+    {value === 1 && <span className="dot dot-center" />}
+    {value === 2 && <><span className="dot dot-tl" /><span className="dot dot-br" /></>}
+    {value === 3 && <><span className="dot dot-tl" /><span className="dot dot-center" /><span className="dot dot-br" /></>}
+    {value === 4 && <><span className="dot dot-tl" /><span className="dot dot-tr" /><span className="dot dot-bl" /><span className="dot dot-br" /></>}
+    {value === 5 && <><span className="dot dot-tl" /><span className="dot dot-tr" /><span className="dot dot-center" /><span className="dot dot-bl" /><span className="dot dot-br" /></>}
+    {value === 6 && <><span className="dot dot-tl" /><span className="dot dot-tr" /><span className="dot dot-ml" /><span className="dot dot-mr" /><span className="dot dot-bl" /><span className="dot dot-br" /></>}
+  </div>
+)
+
 function App() {
   const [input, setInput] = useState('')
   const [display, setDisplay] = useState('0')
@@ -67,6 +78,53 @@ function App() {
   const [worseCount, setWorseCount] = useState(0)
   const [numberMap, setNumberMap] = useState({})
   const [tutorialOrder, setTutorialOrder] = useState([0, 1, 2])
+  const [calcSize, setCalcSize] = useState(48)
+  const [diceValues, setDiceValues] = useState([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
+  const [heldDice, setHeldDice] = useState(Array(16).fill(false))
+  const [isRolling, setIsRolling] = useState(false)
+  const [showDicePopup, setShowDicePopup] = useState(false)
+
+  const toggleHold = (index) => {
+    setHeldDice((prev) => {
+      const next = [...prev]
+      next[index] = !next[index]
+      return next
+    })
+  }
+
+  const rollDice = () => {
+    if (isRolling) return
+    setIsRolling(true)
+    try {
+      const audioContext = new window.AudioContext()
+      const osc = audioContext.createOscillator()
+      const gain = audioContext.createGain()
+      osc.type = 'square'
+      osc.frequency.setValueAtTime(140, audioContext.currentTime)
+      gain.gain.setValueAtTime(0.04, audioContext.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.35)
+      osc.connect(gain)
+      gain.connect(audioContext.destination)
+      osc.start()
+      osc.stop(audioContext.currentTime + 0.35)
+    } catch {
+      // Audio optional
+    }
+
+    let intervalCount = 0
+    const interval = window.setInterval(() => {
+      setDiceValues((prev) => {
+        const next = prev.map((val, idx) => (heldDice[idx] ? val : Math.floor(Math.random() * 6) + 1))
+        setCalcSize(next.reduce((acc, curr) => acc + curr, 0))
+        return next
+      })
+      intervalCount += 1
+      if (intervalCount >= 10) {
+        window.clearInterval(interval)
+        setIsRolling(false)
+      }
+    }, 45)
+  }
 
   const generateShuffledNumberMap = () => {
     const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -426,9 +484,62 @@ function App() {
               <span>Calculation seriousness</span><b>0%</b>
               <span>Useful features</span><b>Not found</b>
               <span>User patience</span><b>decreasing</b>
+              <span>Calculator Size</span><b>{calcSize} (Dice Sum)</b>
             </div>
+            <button
+              type="button"
+              className="dark-popup-next size-setting-btn"
+              style={{ marginBottom: '12px', background: 'var(--yellow)', color: 'var(--ink)' }}
+              onClick={() => { setShowSettingsPopup(false); setShowDicePopup(true); }}
+            >
+              Adjust Calculator Size <span></span>
+            </button>
             <p>Everything is already configured to waste your time. Changing this would be too useful.</p>
             <button type="button" className="dark-popup-next" onClick={() => setShowSettingsPopup(false)}>Leave it useless <span>↩</span></button>
+          </section>
+        </div>
+      )}
+      {showDicePopup && (
+        <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="dice-popup-title">
+          <section className="dark-popup dice-popup">
+            <div className="dark-popup-kicker">DICE ROLL SIZING DEPARTMENT</div>
+            <h2 id="dice-popup-title">ക്യാൽക്കുലേറ്റർ സൈസ് മാറ്റുക</h2>
+            <p className="dice-subtitle">Roll 16 dice to calculate your calculator size. Check &lsquo;Hold&rsquo; to freeze individual dice.</p>
+
+            <div className="dice-grid">
+              {diceValues.map((val, idx) => (
+                <div key={idx} className={`die-item ${heldDice[idx] ? 'held' : ''} ${isRolling && !heldDice[idx] ? 'rolling-die' : ''}`}>
+                  <DieFace value={val} />
+                  <label className="hold-label">
+                    <input
+                      type="checkbox"
+                      checked={heldDice[idx]}
+                      onChange={() => toggleHold(idx)}
+                    />
+                    Hold
+                  </label>
+                </div>
+              ))}
+            </div>
+
+            <div className="dice-footer">
+              <button
+                type="button"
+                className="roll-btn"
+                disabled={isRolling}
+                onClick={rollDice}
+              >
+                {isRolling ? 'Rolling...' : 'Roll'}
+              </button>
+              <div className="dice-readout">
+                <span>Size: <b>{calcSize}</b></span>
+                <span className="volume-icon" role="img" aria-label="Size volume icon">🔊</span>
+              </div>
+            </div>
+
+            <button type="button" className="dark-popup-next" onClick={() => setShowDicePopup(false)}>
+              Accept this arbitrary size <span>↩</span>
+            </button>
           </section>
         </div>
       )}
@@ -479,7 +590,7 @@ function App() {
         </aside>
 
         <section className="calculator-wrap">
-          <div className={`calculator worse-${Math.min(3, worseCount)}`}>
+          <div className={`calculator worse-${Math.min(3, worseCount)}`} style={{ width: `min(100%, ${Math.max(220, Math.min(680, Math.round(408 * (calcSize / 48))))}px)` }}>
             <div className="calc-top"><span className="tiny-light" /> IDK-6767 <span>{currentTime}</span></div>
             <div className={`screen ${loading ? 'screen-loading' : ''}`}>
               <span className="screen-history">{history}{history === 'ഒന്ന് വേഗം ടൈപ്പ് ആക്കെടോ ' ? '' : ' ='}</span>
