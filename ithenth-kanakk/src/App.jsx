@@ -302,6 +302,7 @@ function App() {
       {showAchievements && (
         <div className="dark-popup-backdrop" role="dialog" aria-modal="true" aria-labelledby="achievements-title">
           <section className="dark-popup achievements-popup">
+            <button className="popup-close" type="button" aria-label="Close achievements" onClick={() => setShowAchievements(false)}>×</button>
             <div className="dark-popup-kicker">THE THINGS YOU HAVE DONE</div>
             <h2 id="achievements-title">Achievements</h2>
             <p className="achievements-intro">A collection of consequences. Some are yours. Some are waiting.</p>
