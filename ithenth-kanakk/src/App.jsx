@@ -80,6 +80,7 @@ function App() {
   const [showSettingsPopup, setShowSettingsPopup] = useState(false)
   const rapidClicks = useRef([])
   const [currentTime, setCurrentTime] = useState(getCurrentTime)
+  const [clickedKey, setClickedKey] = useState(null)
 
   const darkPopupText = [
     'ഉറപ്പാണോ മിത്രമേ?',
@@ -172,6 +173,25 @@ function App() {
   }
 
   const press = (value) => {
+    if (/^\d$/.test(value)) {
+      setClickedKey(value)
+      window.setTimeout(() => setClickedKey(null), 180)
+      try {
+        const audioContext = new window.AudioContext()
+        const oscillator = audioContext.createOscillator()
+        const gain = audioContext.createGain()
+        oscillator.type = 'triangle'
+        oscillator.frequency.value = 180 + Number(value) * 32
+        gain.gain.setValueAtTime(0.045, audioContext.currentTime)
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.08)
+        oscillator.connect(gain)
+        gain.connect(audioContext.destination)
+        oscillator.start()
+        oscillator.stop(audioContext.currentTime + 0.08)
+      } catch {
+        // Audio is optional; the visual reaction still works.
+      }
+    }
     const now = Date.now()
     rapidClicks.current = [...rapidClicks.current.filter((clickTime) => now - clickTime < 2500), now]
     if (rapidClicks.current.length >= 4) {
@@ -443,7 +463,7 @@ function App() {
             {prediction && <div className="prediction">I predicted: <b>{prediction.value}</b> <span>{prediction.confidence}% confident · delete it yourself</span></div>}
             <div className="keypad">
               {['C', '⌫', '+/-', '%', '7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '−', '0', '.', '+', '='].map((key) => (
-                <button key={key} className={`key ${['÷', '×', '−', '+', '='].includes(key) ? 'operator' : ''} ${key === 'C' || key === '⌫' || key === '+/-' || key === '%' ? 'utility' : ''} ${key === '=' ? 'equals' : ''}`} onClick={() => press(key)}>{key}</button>
+                <button key={key} className={`key ${clickedKey === key ? 'key-clicked' : ''} ${['÷', '×', '−', '+', '='].includes(key) ? 'operator' : ''} ${key === 'C' || key === '⌫' || key === '+/-' || key === '%' ? 'utility' : ''} ${key === '=' ? 'equals' : ''}`} onClick={() => press(key)}>{key}</button>
               ))}
             </div>
           </div>
