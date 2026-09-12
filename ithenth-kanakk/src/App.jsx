@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 
 const moods = [
@@ -136,8 +136,8 @@ function App() {
 
   const press = (value) => {
     const now = Date.now()
-    rapidClicks.current = [...rapidClicks.current.filter((clickTime) => now - clickTime < 1100), now]
-    if (rapidClicks.current.length >= 6) {
+    rapidClicks.current = [...rapidClicks.current.filter((clickTime) => now - clickTime < 2500), now]
+    if (rapidClicks.current.length >= 4) {
       setShowTooFastPopup(true)
       rapidClicks.current = []
       setMessage('വേഗം കുറയ്ക്കൂ. ഈ calculator പോലും ഇത്രയും serious അല്ല.')
@@ -282,7 +282,7 @@ function App() {
             <div className="dark-popup-kicker">UNNECESSARY INTERRUPTION</div>
             <div className="too-fast-icon" aria-hidden="true">!</div>
             <p id="too-fast-title">Please slow down. This is not a useful app.</p>
-            <small>You clicked 6 times in barely one second. Nothing became more productive.</small>
+            <small>You clicked 4 times in 2.5 seconds. Nothing became more productive.</small>
             <button type="button" className="dark-popup-next" onClick={() => setShowTooFastPopup(false)}>I will waste time slower <span>↗</span></button>
           </section>
         </div>

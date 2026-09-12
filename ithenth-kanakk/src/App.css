@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap');
+:root { --ink: #171b22; --paper: #f8f0e7; --line: 2px solid var(--ink); --pink: #f28db2; --yellow: #f7d76d; --mint: #a9d99e; --blue: #9bd9e4; }
 .too-fast-icon { display: grid; place-items: center; width: 56px; height: 56px; margin: 16px 0; border: var(--line); border-radius: 50%; background: var(--pink); font: 700 34px 'Space Grotesk'; transform: rotate(8deg); }
 .too-fast-popup p { min-height: auto; margin-bottom: 10px; font-size: 22px; }
 .too-fast-popup small { display: block; min-height: 42px; margin-bottom: 18px; color: #74716a; font: 11px/1.45 'DM Mono'; }
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap');
-:root { --ink: #171b22; --paper: #f8f0e7; --line: 2px solid var(--ink); --pink: #f28db2; --yellow: #f7d76d; --mint: #a9d99e; --blue: #9bd9e4; }
 .app-shell { min-height: 100vh; padding: 28px 5vw 18px; background-color: var(--paper); background-image: radial-gradient(#ded2c5 1px, transparent 1px); background-size: 18px 18px; overflow: hidden; }
 .app-shell.dark-mode { --ink: #f8f0e7; --paper: #171b22; --pink: #e879a5; --yellow: #e8c85f; --mint: #8fc985; --blue: #80c7d4; background-color: var(--paper); background-image: radial-gradient(#303640 1px, transparent 1px); }.dark-mode .header-note, .dark-mode .commentary, .dark-mode .footer-commentary, .dark-mode .tutorial-card { background: #252a32; color: var(--ink); }.dark-mode .meter-track { background: #252a32; }.dark-mode .action-stack button { color: var(--ink); }.dark-mode .fine-print, .dark-mode footer { color: #b6b0a7; }
 .topbar, .dashboard, footer { max-width: 1280px; margin: auto; }
