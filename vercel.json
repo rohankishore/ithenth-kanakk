@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npm run build --prefix ithenth-kanakk",
+  "outputDirectory": "ithenth-kanakk/dist",
+  "framework": "vite"
+}
