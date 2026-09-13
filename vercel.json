@@ -1,5 +1,12 @@
 {
+  "installCommand": "npm install --prefix ithenth-kanakk",
   "buildCommand": "npm run build --prefix ithenth-kanakk",
   "outputDirectory": "ithenth-kanakk/dist",
-  "framework": "vite"
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
