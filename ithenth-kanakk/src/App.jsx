@@ -49,6 +49,7 @@ const shuffleDigits = (value) => {
   return `${sign}${digits.join('')}${fraction ? `.${fraction}` : ''}`
 }
 
+
 const getCurrentTime = () => new Intl.DateTimeFormat('en-US', {
   hour: 'numeric',
   minute: '2-digit',
